@@ -1,139 +1,281 @@
-# Multi-Agent HR Intelligence Platform
+<div align="center">
 
-> Enterprise-grade multi-agent AI system for autonomous HR operations — built with LangGraph, GPT-4, and a whole lot of vibe coding.
+# 🤖 HR Agent Platform
 
-**[Live Demo](https://hr-platform-837558695367.us-central1.run.app)** · **Python 77.6%** · **101 Modules** · **1,909 Tests** · **8 AI Agents**
+**Enterprise-Grade Multi-Agent AI System for Autonomous HR Operations**
+
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
+[![LangGraph](https://img.shields.io/badge/LangGraph-0.2-1C3C3C?style=flat&logo=langchain&logoColor=white)](https://langchain-ai.github.io/langgraph/)
+[![Tests](https://img.shields.io/badge/Tests-1%2C909_Passing-brightgreen?style=flat&logo=pytest&logoColor=white)](#testing)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
+[![GCP](https://img.shields.io/badge/Deployed-GCP_Cloud_Run-4285F4?style=flat&logo=googlecloud&logoColor=white)](https://hr-platform-837558695367.us-central1.run.app/dashboard)
+
+[Live Demo](https://hr-platform-837558695367.us-central1.run.app/dashboard) · [Architecture](#architecture) · [Quick Start](#quick-start) · [Vibe Coding Journey](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)
+
+</div>
 
 ---
 
-## What Is This?
+## Why This Project?
 
-An AI-powered HR platform that orchestrates **8 specialized agents** to handle policy Q&A, leave management, benefits enrollment, compliance auditing, workforce analytics, and more. Each agent owns a domain, and a router agent classifies incoming requests and delegates to the right specialist.
+Most HR "AI" tools are just chatbots with a knowledge base. This platform is different — it orchestrates **8 specialized AI agents** that autonomously handle complex, multi-step HR workflows end-to-end: from answering policy questions to processing leave requests, enrolling benefits, auditing compliance, and generating workforce analytics.
 
-Built almost entirely through **AI-assisted "vibe coding"** with Claude Code and GitHub Copilot — then hardened with 1,909 unit tests, Playwright E2E testing, and production deployment on Google Cloud Run.
+Built as an enterprise-grade system with **MCP integration**, **RAG-powered knowledge retrieval**, **PII protection**, and **production observability** — then hardened with **1,909 tests** and deployed on GCP Cloud Run.
 
-### Architecture
+### Key Numbers
 
+| Metric | Value |
+|--------|-------|
+| 🤖 Specialized Agents | **8** (policy, leave, benefits, compliance, analytics, onboarding, payroll, recruitment) |
+| 🔧 MCP Tools | **28** tools, **8** resources, **5** prompts via FastMCP |
+| 🧪 Test Coverage | **1,909** tests (Pytest unit/integration + Playwright E2E) |
+| 📦 Python Modules | **101** across the platform |
+| ☁️ Deployment | **GCP Cloud Run** with CI/CD pipeline |
+
+---
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Client["🖥️ Client Layer"]
+        UI[Web Dashboard]
+        API_Client[API Consumer]
+    end
+
+    subgraph Gateway["🔀 API Gateway"]
+        Flask[Flask REST API]
+        Auth[JWT Auth]
+        RateLimit[Rate Limiter]
+        PII[PII Masking]
+    end
+
+    subgraph Orchestration["🧠 Agent Orchestration — LangGraph"]
+        Router{Intelligent Router}
+        Policy[📋 Policy Agent]
+        Leave[🏖️ Leave Agent]
+        Benefits[💊 Benefits Agent]
+        Compliance[🔒 Compliance Agent]
+        Analytics[📊 Analytics Agent]
+        Onboarding[🎯 Onboarding Agent]
+        Payroll[💰 Payroll Agent]
+        Recruitment[🔍 Recruitment Agent]
+    end
+
+    subgraph Knowledge["📚 Knowledge Layer"]
+        RAG[RAG Pipeline]
+        ChromaDB[(ChromaDB)]
+        Embeddings[Sentence Transformers]
+    end
+
+    subgraph Integration["🔌 Integrations"]
+        MCP[MCP Server — FastMCP]
+        BambooHR[BambooHR Connector]
+        Slack[Slack Notifications]
+        Teams[MS Teams]
+    end
+
+    subgraph Infrastructure["⚙️ Infrastructure"]
+        Postgres[(PostgreSQL)]
+        Redis[(Redis Cache)]
+        Prometheus[Prometheus]
+        Grafana[Grafana]
+        LangSmith[LangSmith Tracing]
+    end
+
+    UI --> Flask
+    API_Client --> Flask
+    Flask --> Auth --> RateLimit --> PII --> Router
+    Router --> Policy & Leave & Benefits & Compliance & Analytics & Onboarding & Payroll & Recruitment
+    Policy & Leave & Benefits & Compliance --> RAG
+    RAG --> ChromaDB
+    RAG --> Embeddings
+    Router --> MCP
+    MCP --> BambooHR
+    Analytics --> Postgres
+    Policy --> Redis
+    Flask --> Prometheus --> Grafana
+    Router --> LangSmith
+    Compliance --> Slack & Teams
 ```
-                         ┌─────────────────┐
-                         │   Web UI / Chat  │
-                         └────────┬────────┘
-                                  │
-                         ┌────────▼────────┐
-                         │   REST API GW   │
-                         └────────┬────────┘
-                                  │
-                         ┌────────▼────────┐
-                         │  Router Agent   │
-                         └──┬──┬──┬──┬──┬─┘
-                            │  │  │  │  │
-              ┌─────────────┼──┼──┼──┼──┼─────────────┐
-              ▼             ▼  ▼  ▼  ▼  ▼             ▼
-           Policy      Benefits Leave Employee   Compliance
-           Agent        Agent  Agent   Agent       Agent
-              │             │              │
-              └─────────────┴──────────────┘
-                            │
-              ┌─────────────▼──────────────┐
-              │     Core Services Layer     │
-              │  RAG · LLM GW · PII Mask  │
-              │  HRIS · Compliance · Docs  │
-              └─────────────┬──────────────┘
-                            │
-              ┌─────────────▼──────────────┐
-              │  PostgreSQL · Redis · Chroma │
-              └────────────────────────────┘
-```
 
-## Key Features
+### How It Works
 
-- **Multi-Agent Orchestration** — 8 specialized agents via LangGraph with intelligent routing
-- **Enterprise HRIS Integration** — Workday, BambooHR, and custom system connectors
-- **Global Compliance** — GDPR, CCPA, HIPAA, multi-jurisdiction support
-- **RAG-Powered Responses** — ChromaDB + Sentence Transformers for policy-aware answers
-- **PII Detection & Masking** — Automatic sensitive data protection across all agent responses
-- **Production Observability** — Prometheus metrics, Grafana dashboards, LangSmith tracing
-- **Real-time Notifications** — Slack and Microsoft Teams channel adapters
+1. **Request enters** → Flask API with JWT auth, rate limiting, and automatic PII detection/masking
+2. **Intelligent routing** → LangGraph orchestrator analyzes intent and delegates to the right specialized agent
+3. **Agent executes** → Each agent has its own tools, knowledge access (via RAG), and decision logic
+4. **MCP integration** → 28 tools exposed via FastMCP for external system interoperability (BambooHR, etc.)
+5. **Response returned** → With full observability traced through LangSmith, Prometheus, and Grafana
+
+---
 
 ## Tech Stack
 
 | Layer | Technologies |
 |-------|-------------|
-| **Backend** | Python 3.10+, Flask 3.0, LangGraph 0.2 |
-| **AI/ML** | OpenAI GPT-4, Gemini fallback, ChromaDB, Sentence Transformers |
-| **Data** | PostgreSQL 15+, Redis 7+, SQLAlchemy 2.0, Alembic |
-| **Frontend** | HTML/CSS/JS, Jinja2 templates |
-| **Infrastructure** | Docker, Google Cloud Run, Nginx, Prometheus, Grafana |
+| **AI/ML** | LangGraph 0.2, OpenAI GPT-4, Gemini (fallback), ChromaDB, Sentence Transformers |
+| **Backend** | Python 3.10+, Flask 3.0, SQLAlchemy 2.0, Celery |
+| **MCP** | FastMCP — 28 tools, 8 resources, 5 prompts |
+| **Data** | PostgreSQL 15+, Redis 7+, ChromaDB |
+| **Frontend** | HTML/CSS/JS, Jinja2, Chart.js |
+| **Infrastructure** | Docker, GCP Cloud Run, Nginx, CI/CD |
+| **Observability** | Prometheus, Grafana, LangSmith |
 | **Testing** | Pytest (1,909 tests), Playwright E2E |
-| **Dev Tools** | Claude Code, GitHub Copilot, Black, Ruff |
+| **Compliance** | GDPR, CCPA, HIPAA frameworks |
 
-## Quick Start
-
-```bash
-# Clone and configure
-git clone https://github.com/aidenmak0624/HR_agent.git
-cd HR_agent
-cp .env.example .env    # Set your OPENAI_API_KEY
-
-# Docker (recommended)
-docker-compose up -d    # → http://localhost:5050
-
-# Or local dev
-pip install -r requirements.txt
-python src/app_v2.py    # → http://localhost:5050
-```
-
-**Demo credentials:** `admin@company.com` / `admin123`
+---
 
 ## Project Structure
 
 ```
-├── src/                    Application source code
-│   ├── agents/               8 specialized AI agents
-│   ├── api/                  REST API routes
-│   ├── core/                 RAG, LLM gateway, compliance, security
-│   ├── connectors/           HRIS integrations
-│   ├── middleware/            Rate limiting, PII masking, auth
-│   └── services/             Business logic & orchestration
-├── frontend/               Web UI (templates + static assets)
-├── tests/                  Test suite (1,909 unit + E2E tests)
-├── docs/                   Documentation & development history
-├── showcase/               Interactive HTML demo reports
-├── config/                 Configuration management
-├── deploy/                 Cloud deployment configs
-├── scripts/                Utility & automation scripts
-└── grafana/                Dashboard definitions
+HR_agent/
+├── src/
+│   ├── agents/              # 8 specialized LangGraph agents
+│   │   ├── policy_agent.py
+│   │   ├── leave_agent.py
+│   │   ├── benefits_agent.py
+│   │   ├── compliance_agent.py
+│   │   ├── analytics_agent.py
+│   │   ├── onboarding_agent.py
+│   │   ├── payroll_agent.py
+│   │   └── recruitment_agent.py
+│   ├── api/                 # REST API routes & middleware
+│   ├── core/                # RAG pipeline, LLM gateway, compliance engine
+│   ├── connectors/          # HRIS integrations (BambooHR, Workday)
+│   ├── mcp/                 # FastMCP server — tools, resources, prompts
+│   ├── middleware/           # Rate limiting, PII masking, JWT auth
+│   └── services/            # Business logic & orchestration
+├── frontend/                # Web UI (templates + static assets)
+├── tests/                   # 1,909 tests (unit, integration, E2E)
+├── deploy/                  # Docker, GCP Cloud Run configs
+├── docs/                    # Architecture & API documentation
+└── docker-compose.yml
 ```
 
-## Development Story
+---
 
-This platform was built across **8 iterative development cycles** using AI-assisted development:
+## Quick Start
 
-1. **Foundation** — Auth, RBAC, 7 core agents, RAG system, HRIS connectors
-2. **Workflows** — Leave approval chains, GDPR framework, bias audit logging
-3. **Persistence** — PostgreSQL schema, SQLAlchemy ORM, Flask integration
-4. **LLM Gateway** — OpenAI GPT-4, Gemini fallback, cost tracking, streaming
-5. **DevOps** — Docker, CI/CD, Slack/Teams bots, conversation memory
-6. **Security** — PII detection/masking, rate limiting, Prometheus metrics
-7. **Compliance** — CCPA, multi-jurisdiction, data localization, WebSocket
-8. **Platform** — Admin API, health checks, feature flags, SLA monitoring
+### Prerequisites
 
-See [`docs/iterations/`](docs/iterations/) for detailed records of each cycle.
+- Python 3.10+
+- Docker & Docker Compose
+- OpenAI API key
 
-## Documentation
+### Run with Docker (recommended)
 
-| Doc | Description |
-|-----|-------------|
-| [Architecture](docs/ARCHITECTURE.md) | System design and component overview |
-| [API Reference](docs/API_REFERENCE.md) | Complete REST API docs |
-| [Developer Guide](docs/DEVELOPER_GUIDE.md) | Setup, coding standards, contribution guide |
+```bash
+# Clone
+git clone https://github.com/aidenmak0624/HR_agent.git
+cd HR_agent
 
-## The Vibe Coding Story
+# Configure environment
+cp .env.example .env
+# Add your OPENAI_API_KEY to .env
 
-This project started as an experiment in AI-assisted development. Nearly all code was written through conversational pair-programming with **Claude Code** and **GitHub Copilot** — from initial scaffolding to agent logic, test suites, and deployment configs.
+# Start all services
+docker-compose up -d
 
-Want the full story? Check out the [Vibe Coding Journey](showcase/showcase_vibe_coding.html) showcase, or come see the live demo at **[AI Tinkerers Toronto](https://toronto.aitinkerers.org)**.
+# Access the dashboard
+open http://localhost:5050/dashboard
+```
+
+**Demo credentials:** `admin@company.com` / `admin123`
+
+### Run locally
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up database
+flask db upgrade
+
+# Start the application
+python run.py
+```
+
+---
+
+## Testing
+
+The platform is backed by **1,909 tests** across multiple testing layers:
+
+```bash
+# Run full test suite
+pytest
+
+# Run with coverage
+pytest --cov=src --cov-report=html
+
+# Run E2E tests
+playwright install
+pytest tests/e2e/
+```
+
+| Test Type | Count | What It Covers |
+|-----------|-------|----------------|
+| Unit | ~1,400 | Agent logic, RAG pipeline, PII detection, compliance rules |
+| Integration | ~350 | API endpoints, database operations, MCP tool execution |
+| E2E | ~159 | Full user flows via Playwright browser automation |
+
+---
+
+## MCP Integration
+
+The platform exposes an MCP server via **FastMCP** for interoperability with external AI systems:
+
+```python
+# Connect to the HR Agent MCP server
+from fastmcp import Client
+
+async with Client("hr-agent-mcp") as client:
+    # List available tools
+    tools = await client.list_tools()  # 28 tools
+
+    # Execute a tool
+    result = await client.call_tool(
+        "get_leave_balance",
+        {"employee_id": "EMP001"}
+    )
+```
+
+**28 tools** across HR domains: leave management, benefits enrollment, policy queries, compliance checks, analytics reporting, and more.
+
+---
+
+## Development Approach
+
+This project was built using an **AI-assisted "vibe coding" methodology** — leveraging Claude Code for architecture and backend, GitHub Copilot for in-editor assistance, Figma for UI design, and Antigravity for manual QA validation. Every AI-generated component was then hardened through rigorous testing (1,909 tests) and production deployment.
+
+📖 **[Read the full Vibe Coding Case Study →](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)**
+
+---
+
+## Live Demo
+
+🔗 **[hr-platform-837558695367.us-central1.run.app/dashboard](https://hr-platform-837558695367.us-central1.run.app/dashboard)**
+
+The platform is deployed on **Google Cloud Run** with:
+- Automatic scaling and load balancing
+- CI/CD pipeline for continuous deployment
+- Prometheus + Grafana monitoring
+- LangSmith tracing for agent observability
+
+---
 
 ## License
 
-MIT
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**Built by [Aiden Mak](https://aidenmak.vercel.app)** · AI Engineer · Toronto
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-aidenmak.vercel.app-000000?style=flat&logo=vercel&logoColor=white)](https://aidenmak.vercel.app)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-mcwaiden-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/mcwaiden)
+[![Email](https://img.shields.io/badge/Email-mcwaiden000@gmail.com-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:mcwaiden000@gmail.com)
+
+</div>
