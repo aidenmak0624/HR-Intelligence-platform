@@ -469,6 +469,7 @@ def login_page():
     """Login page."""
     return render_template("login.html")
 
+
 @app.route("/showcase", methods=["GET"])
 @app.route("/showcase/showcase_developer", methods=["GET"])
 def showcase_page():
