@@ -12,6 +12,8 @@
 
 [Live Demo](https://hr-platform-837558695367.us-central1.run.app/dashboard) · [Architecture](#architecture) · [Quick Start](#quick-start) · [Vibe Coding Journey](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)
 
+[📊 Business Showcase](https://aidenmak.vercel.app/showcase/hr-agent-business.html) · [🔧 Developer Deep-Dive](https://aidenmak.vercel.app/showcase/hr-agent-developer.html)
+
 </div>
 
 ---
