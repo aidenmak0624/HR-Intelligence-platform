@@ -75,6 +75,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .flow-node{padding:10px 16px;border-radius:8px;font-size:.78rem;font-weight:600;color:#fff;white-space:nowrap}
 .flow-arrow{font-size:1.2rem;color:var(--txm);padding:0 6px}
 
+/* SVG DIAGRAMS */
+.diagram-wrap{background:var(--bg);border:1px solid var(--bdr);border-radius:12px;padding:28px;overflow-x:auto;margin:16px 0}
+.diagram-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.diagram-caption{text-align:center;font-size:.78rem;color:var(--txm);margin-top:14px;font-family:'Inter',system-ui,sans-serif;font-style:italic}
+
 /* AGENT CARD */
 .agent-card{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:10px;padding:20px;transition:border-color .2s}
 .agent-card:hover{border-color:#4f46e5}
@@ -115,52 +120,231 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
 <!-- ═══ ARCHITECTURE ═══ -->
 <div id="arch" class="section active">
+
+  <!-- Diagram 1: Request Pipeline -->
   <div class="card">
-    <h2>System Architecture</h2>
-    <p class="sub">Layered architecture with clean separation of concerns</p>
-    <div class="code">
-<span class="cm">// Request flow through the system</span>
-<span class="kw">Client</span> → <span class="fn">Flask API Gateway</span> → <span class="fn">Auth Middleware</span> → <span class="fn">Rate Limiter</span>
-   → <span class="fn">Router Agent</span> <span class="cm">(classifies intent)</span>
-   → <span class="fn">Specialist Agent</span> <span class="cm">(1 of 8)</span>
-   → <span class="fn">RAG Engine</span> + <span class="fn">HRIS Connector</span> <span class="cm">(fetches context)</span>
-   → <span class="fn">LLM Gateway</span> <span class="cm">(GPT-4 with Gemini fallback)</span>
-   → <span class="fn">PII Stripper</span> → <span class="fn">Bias Logger</span> → <span class="fn">Response</span>
+    <h2>Request Pipeline</h2>
+    <p class="sub">Every query passes through 5 stages — security, classification, reasoning, and validation</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 280" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <defs>
+          <marker id="da1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#818cf8"/></marker>
+          <filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/></filter>
+        </defs>
+        <!-- Step 1 -->
+        <rect x="15" y="30" width="180" height="210" rx="14" fill="#1e1b4b" stroke="#4338ca" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="105" y="70" text-anchor="middle" font-size="26">💬</text>
+        <text x="105" y="100" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">User Query</text>
+        <text x="105" y="122" text-anchor="middle" font-size="10" fill="#94a3b8">Natural language</text>
+        <text x="105" y="138" text-anchor="middle" font-size="10" fill="#94a3b8">via Chat / Slack</text>
+        <text x="105" y="154" text-anchor="middle" font-size="10" fill="#94a3b8">/ Teams / API</text>
+        <rect x="55" y="175" width="100" height="22" rx="6" fill="rgba(99,102,241,.2)" stroke="rgba(99,102,241,.4)" stroke-width="1"/>
+        <text x="105" y="190" text-anchor="middle" font-size="9" font-weight="700" fill="#a5b4fc">STEP 1</text>
+        <!-- Arrow -->
+        <line x1="200" y1="135" x2="228" y2="135" stroke="#818cf8" stroke-width="2" marker-end="url(#da1)"/>
+        <!-- Step 2 -->
+        <rect x="235" y="30" width="180" height="210" rx="14" fill="#1c1917" stroke="#d97706" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="325" y="70" text-anchor="middle" font-size="26">🛡️</text>
+        <text x="325" y="100" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">Input Guardrails</text>
+        <text x="325" y="122" text-anchor="middle" font-size="10" fill="#94a3b8">PII detection</text>
+        <text x="325" y="138" text-anchor="middle" font-size="10" fill="#94a3b8">Prompt injection</text>
+        <text x="325" y="154" text-anchor="middle" font-size="10" fill="#94a3b8">Rate abuse block</text>
+        <rect x="275" y="175" width="100" height="22" rx="6" fill="rgba(249,115,22,.15)" stroke="rgba(249,115,22,.4)" stroke-width="1"/>
+        <text x="325" y="190" text-anchor="middle" font-size="9" font-weight="700" fill="#fb923c">STEP 2</text>
+        <!-- Arrow -->
+        <line x1="420" y1="135" x2="448" y2="135" stroke="#818cf8" stroke-width="2" marker-end="url(#da1)"/>
+        <!-- Step 3 -->
+        <rect x="455" y="30" width="180" height="210" rx="14" fill="#022c22" stroke="#22c55e" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="545" y="70" text-anchor="middle" font-size="26">🧠</text>
+        <text x="545" y="100" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">Router Agent</text>
+        <text x="545" y="122" text-anchor="middle" font-size="10" fill="#94a3b8">Intent classification</text>
+        <text x="545" y="138" text-anchor="middle" font-size="10" fill="#94a3b8">RBAC permission</text>
+        <text x="545" y="154" text-anchor="middle" font-size="10" fill="#94a3b8">Agent dispatch</text>
+        <rect x="495" y="175" width="100" height="22" rx="6" fill="rgba(34,197,94,.15)" stroke="rgba(34,197,94,.4)" stroke-width="1"/>
+        <text x="545" y="190" text-anchor="middle" font-size="9" font-weight="700" fill="#4ade80">STEP 3</text>
+        <!-- Arrow -->
+        <line x1="640" y1="135" x2="668" y2="135" stroke="#818cf8" stroke-width="2" marker-end="url(#da1)"/>
+        <!-- Step 4 -->
+        <rect x="675" y="30" width="180" height="210" rx="14" fill="#172554" stroke="#3b82f6" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="765" y="70" text-anchor="middle" font-size="26">⚡</text>
+        <text x="765" y="100" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">Specialist Agent</text>
+        <text x="765" y="122" text-anchor="middle" font-size="10" fill="#94a3b8">Plan → RAG retrieve</text>
+        <text x="765" y="138" text-anchor="middle" font-size="10" fill="#94a3b8">LLM reason → reflect</text>
+        <text x="765" y="154" text-anchor="middle" font-size="10" fill="#94a3b8">Confidence scoring</text>
+        <rect x="715" y="175" width="100" height="22" rx="6" fill="rgba(59,130,246,.15)" stroke="rgba(59,130,246,.4)" stroke-width="1"/>
+        <text x="765" y="190" text-anchor="middle" font-size="9" font-weight="700" fill="#60a5fa">STEP 4</text>
+        <!-- Arrow -->
+        <line x1="860" y1="135" x2="888" y2="135" stroke="#818cf8" stroke-width="2" marker-end="url(#da1)"/>
+        <!-- Step 5 -->
+        <rect x="895" y="30" width="185" height="210" rx="14" fill="#4c1d95" stroke="#818cf8" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="988" y="70" text-anchor="middle" font-size="26">✅</text>
+        <text x="988" y="100" text-anchor="middle" font-weight="700" font-size="13" fill="#fff">Validated Response</text>
+        <text x="988" y="122" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.7)">Output guardrails</text>
+        <text x="988" y="138" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.7)">PII strip + citation</text>
+        <text x="988" y="154" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.7)">Audit log entry</text>
+        <rect x="938" y="175" width="100" height="22" rx="6" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+        <text x="988" y="190" text-anchor="middle" font-size="9" font-weight="700" fill="#c4b5fd">STEP 5</text>
+      </svg>
+      <div class="diagram-caption">Each stage enforces security, compliance, and quality before the response reaches the employee.</div>
     </div>
   </div>
 
+  <!-- Diagram 2: System Architecture Layers -->
   <div class="card">
-    <h2>Project Structure</h2>
-    <div class="tree">
-<span class="dir">src/</span>
-├── <span class="dir">agents/</span>          <span class="cm"># 8 specialized LangGraph agents + router</span>
-│   ├── <span class="hi">router_agent.py</span>     <span class="cm"># Intent classification → agent dispatch</span>
-│   ├── <span class="file">policy_agent.py</span>     <span class="cm"># RAG-powered policy Q&A</span>
-│   ├── <span class="file">leave_agent.py</span>      <span class="cm"># Leave workflows with approval chains</span>
-│   ├── <span class="file">compliance_agent.py</span> <span class="cm"># GDPR/CCPA enforcement</span>
-│   └── <span class="file">... (8 agents total)</span>
-├── <span class="dir">api/</span>             <span class="cm"># Flask REST routes (v2)</span>
-│   ├── <span class="file">v2/</span>                 <span class="cm"># Versioned API endpoints</span>
-│   ├── <span class="file">admin_routes.py</span>     <span class="cm"># User mgmt, feature flags</span>
-│   └── <span class="file">health_routes.py</span>    <span class="cm"># Liveness + readiness probes</span>
-├── <span class="dir">core/</span>            <span class="cm"># Core services (20+ modules)</span>
-│   ├── <span class="hi">rag_engine.py</span>       <span class="cm"># ChromaDB + sentence-transformers</span>
-│   ├── <span class="hi">llm_gateway.py</span>      <span class="cm"># Multi-model with failover</span>
-│   ├── <span class="file">gdpr.py</span>             <span class="cm"># EU data protection</span>
-│   ├── <span class="file">ccpa.py</span>             <span class="cm"># California privacy</span>
-│   ├── <span class="file">pii_stripper.py</span>     <span class="cm"># Regex + NER PII detection</span>
-│   └── <span class="file">... (20+ core modules)</span>
-├── <span class="dir">connectors/</span>      <span class="cm"># HRIS integrations</span>
-│   ├── <span class="file">workday.py</span>          <span class="cm"># Workday REST API client</span>
-│   ├── <span class="file">bamboohr.py</span>         <span class="cm"># BambooHR API client</span>
-│   └── <span class="file">payroll_connector.py</span>
-├── <span class="dir">middleware/</span>      <span class="cm"># Security layer</span>
-├── <span class="dir">services/</span>        <span class="cm"># Business logic</span>
-├── <span class="dir">repositories/</span>    <span class="cm"># Data access (SQLAlchemy)</span>
-└── <span class="dir">platform_services/</span> <span class="cm"># Dashboard, SLA, cost tracking</span>
+    <h2>System Architecture — Layered Design</h2>
+    <p class="sub">5-layer architecture with clean separation of concerns</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 490" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <!-- Layer 1: Clients -->
+        <rect x="50" y="20" width="1000" height="65" rx="12" fill="#1e1b4b" stroke="#4338ca" stroke-width="1.5"/>
+        <text x="80" y="47" font-size="9" font-weight="700" fill="#a5b4fc" letter-spacing="1.5">CLIENTS</text>
+        <rect x="180" y="35" width="120" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="240" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">Web Dashboard</text>
+        <rect x="315" y="35" width="100" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="365" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">Slack Bot</text>
+        <rect x="430" y="35" width="100" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="480" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">Teams Bot</text>
+        <rect x="545" y="35" width="110" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="600" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">MCP Client</text>
+        <rect x="670" y="35" width="100" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="720" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">REST API</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="85" x2="550" y2="105" stroke="#4338ca" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 2: Middleware -->
+        <rect x="50" y="108" width="1000" height="65" rx="12" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="80" y="135" font-size="9" font-weight="700" fill="#fb923c" letter-spacing="1.5">MIDDLEWARE</text>
+        <rect x="200" y="123" width="100" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="250" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">JWT Auth</text>
+        <rect x="315" y="123" width="110" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="370" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Rate Limiter</text>
+        <rect x="440" y="123" width="110" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="495" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">PII Stripper</text>
+        <rect x="565" y="123" width="100" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="615" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Sanitizer</text>
+        <rect x="680" y="123" width="130" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="745" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Security Headers</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="173" x2="550" y2="193" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 3: AI Core -->
+        <rect x="50" y="196" width="1000" height="95" rx="12" fill="#022c22" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="80" y="223" font-size="9" font-weight="700" fill="#4ade80" letter-spacing="1.5">AI CORE</text>
+        <rect x="170" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="230" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">Router Agent</text>
+        <text x="230" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">intent + dispatch</text>
+        <rect x="305" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="365" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">7 Specialists</text>
+        <text x="365" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">LangGraph agents</text>
+        <rect x="440" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="500" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">RAG Pipeline</text>
+        <text x="500" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">ChromaDB vectors</text>
+        <rect x="575" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="635" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">LLM Gateway</text>
+        <text x="635" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">GPT-4 + Gemini</text>
+        <rect x="710" y="218" width="110" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="765" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">Guardrails</text>
+        <text x="765" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">in/out validation</text>
+        <rect x="835" y="218" width="110" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="890" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">Workflows</text>
+        <text x="890" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">approval engine</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="291" x2="550" y2="311" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 4: Data -->
+        <rect x="50" y="314" width="1000" height="65" rx="12" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="80" y="341" font-size="9" font-weight="700" fill="#60a5fa" letter-spacing="1.5">DATA</text>
+        <rect x="185" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="240" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">PostgreSQL</text>
+        <rect x="310" y="329" width="85" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="353" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Redis</text>
+        <rect x="410" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="465" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">ChromaDB</text>
+        <rect x="535" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="590" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">BambooHR</text>
+        <rect x="660" y="329" width="100" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="710" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Workday</text>
+        <rect x="775" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="830" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Payroll API</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="379" x2="550" y2="399" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 5: Ops -->
+        <rect x="50" y="402" width="1000" height="65" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+        <text x="80" y="429" font-size="9" font-weight="700" fill="#94a3b8" letter-spacing="1.5">OPS</text>
+        <text x="210" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">Docker</text>
+        <text x="350" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">Cloud Run</text>
+        <text x="500" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">GitHub Actions CI</text>
+        <text x="670" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">LangSmith Tracing</text>
+        <text x="850" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">121 Playwright Tests</text>
+      </svg>
+      <div class="diagram-caption">5-layer architecture: Clients → Middleware (security) → AI Core (agents + RAG) → Data (DB + HRIS) → DevOps</div>
     </div>
   </div>
 
+  <!-- Diagram 3: Agent Internal Loop -->
+  <div class="card">
+    <h2>Agent Internal Loop — LangGraph State Machine</h2>
+    <p class="sub">Each specialist follows a Plan → Execute → Reflect loop with confidence-based termination</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 310" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <defs>
+          <marker id="da2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+          <marker id="da2r" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ef4444"/></marker>
+          <marker id="da2g" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#22c55e"/></marker>
+        </defs>
+        <!-- Node 1: Plan -->
+        <rect x="30" y="60" width="175" height="135" rx="12" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="118" y="97" text-anchor="middle" font-size="22">📝</text>
+        <text x="118" y="125" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">Plan</text>
+        <text x="118" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">Break query into</text>
+        <text x="118" y="160" text-anchor="middle" font-size="10" fill="#94a3b8">actionable steps</text>
+        <text x="118" y="180" text-anchor="middle" font-size="9" fill="#60a5fa" font-weight="600">LLM-powered</text>
+        <!-- Arrow -->
+        <line x1="210" y1="128" x2="248" y2="128" stroke="#818cf8" stroke-width="2" marker-end="url(#da2)"/>
+        <!-- Node 2: RAG -->
+        <rect x="255" y="60" width="175" height="135" rx="12" fill="#022c22" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="343" y="97" text-anchor="middle" font-size="22">🔍</text>
+        <text x="343" y="125" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">RAG Retrieve</text>
+        <text x="343" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">Search ChromaDB</text>
+        <text x="343" y="160" text-anchor="middle" font-size="10" fill="#94a3b8">for relevant docs</text>
+        <text x="343" y="180" text-anchor="middle" font-size="9" fill="#4ade80" font-weight="600">Vector search</text>
+        <!-- Arrow -->
+        <line x1="435" y1="128" x2="473" y2="128" stroke="#818cf8" stroke-width="2" marker-end="url(#da2)"/>
+        <!-- Node 3: Reason -->
+        <rect x="480" y="60" width="175" height="135" rx="12" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="568" y="97" text-anchor="middle" font-size="22">🤖</text>
+        <text x="568" y="125" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">LLM Reason</text>
+        <text x="568" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">Generate answer</text>
+        <text x="568" y="160" text-anchor="middle" font-size="10" fill="#94a3b8">from context + docs</text>
+        <text x="568" y="180" text-anchor="middle" font-size="9" fill="#fb923c" font-weight="600">GPT-4 / Gemini</text>
+        <!-- Arrow -->
+        <line x1="660" y1="128" x2="698" y2="128" stroke="#818cf8" stroke-width="2" marker-end="url(#da2)"/>
+        <!-- Node 4: Reflect -->
+        <rect x="705" y="60" width="175" height="135" rx="12" fill="#1e1b4b" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="793" y="97" text-anchor="middle" font-size="22">🪞</text>
+        <text x="793" y="125" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">Reflect</text>
+        <text x="793" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">Score confidence</text>
+        <text x="793" y="160" text-anchor="middle" font-size="10" fill="#94a3b8">0.0 → 1.0</text>
+        <text x="793" y="180" text-anchor="middle" font-size="9" fill="#a78bfa" font-weight="600">Self-evaluation</text>
+        <!-- Arrow to diamond -->
+        <line x1="885" y1="128" x2="918" y2="128" stroke="#818cf8" stroke-width="2" marker-end="url(#da2)"/>
+        <!-- Decision diamond -->
+        <polygon points="980,90 1040,128 980,166 920,128" fill="#0f172a" stroke="#e2e8f0" stroke-width="1.5"/>
+        <text x="980" y="124" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">conf</text>
+        <text x="980" y="138" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">≥ 0.7?</text>
+        <!-- YES path -->
+        <line x1="980" y1="166" x2="980" y2="225" stroke="#22c55e" stroke-width="2" marker-end="url(#da2g)"/>
+        <text x="998" y="200" font-size="11" font-weight="700" fill="#22c55e">YES</text>
+        <rect x="915" y="230" width="130" height="42" rx="10" fill="#166534" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="980" y="257" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Return Answer</text>
+        <!-- NO path: loop back -->
+        <line x1="980" y1="90" x2="980" y2="42" stroke="#ef4444" stroke-width="2"/>
+        <line x1="980" y1="42" x2="118" y2="42" stroke="#ef4444" stroke-width="2"/>
+        <line x1="118" y1="42" x2="118" y2="55" stroke="#ef4444" stroke-width="2" marker-end="url(#da2r)"/>
+        <text x="550" y="35" text-anchor="middle" font-size="10" font-weight="700" fill="#ef4444">NO — retry with refined plan (max 3 iterations)</text>
+      </svg>
+      <div class="diagram-caption">Agents don't just answer — they reason, self-evaluate, and retry if confidence is too low. This prevents hallucinations.</div>
+    </div>
+  </div>
+
+  <!-- Key Design Decisions (kept as cards) -->
   <div class="card">
     <h2>Key Design Decisions</h2>
     <div class="g2">
@@ -182,6 +366,140 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </div>
     </div>
   </div>
+
+  <!-- Project Structure -->
+  <div class="card">
+    <h2>Project Structure</h2>
+    <p class="sub">Clean module hierarchy with separation of concerns across 8 top-level packages</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <!-- Root -->
+        <rect x="410" y="10" width="280" height="44" rx="10" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+        <text x="425" y="38" font-size="13" font-weight="700" fill="#60a5fa">📁 src/</text>
+        <text x="580" y="38" font-size="10" fill="#94a3b8">111 modules · 51K LOC</text>
+
+        <!-- Vertical trunk line -->
+        <line x1="550" y1="54" x2="550" y2="80" stroke="#334155" stroke-width="1.5"/>
+
+        <!-- Row 1: agents/ + api/ + core/ + connectors/ -->
+        <line x1="170" y1="80" x2="930" y2="80" stroke="#334155" stroke-width="1.5"/>
+        <!-- drop lines -->
+        <line x1="170" y1="80" x2="170" y2="98" stroke="#334155" stroke-width="1.5"/>
+        <line x1="430" y1="80" x2="430" y2="98" stroke="#334155" stroke-width="1.5"/>
+        <line x1="680" y1="80" x2="680" y2="98" stroke="#334155" stroke-width="1.5"/>
+        <line x1="930" y1="80" x2="930" y2="98" stroke="#334155" stroke-width="1.5"/>
+
+        <!-- agents/ card -->
+        <rect x="55" y="100" width="230" height="175" rx="12" fill="#022c22" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="75" y="128" font-size="12" font-weight="700" fill="#4ade80">📁 agents/</text>
+        <text x="200" y="128" font-size="9" fill="#94a3b8">8 agents</text>
+        <line x1="75" y1="138" x2="265" y2="138" stroke="rgba(34,197,94,.2)" stroke-width="1"/>
+        <text x="75" y="160" font-size="10" font-weight="700" fill="#818cf8">router_agent.py</text>
+        <text x="75" y="178" font-size="9" fill="#94a3b8">policy_agent.py</text>
+        <text x="75" y="194" font-size="9" fill="#94a3b8">leave_agent.py</text>
+        <text x="75" y="210" font-size="9" fill="#94a3b8">compliance_agent.py</text>
+        <text x="75" y="226" font-size="9" fill="#94a3b8">onboarding_agent.py</text>
+        <text x="75" y="242" font-size="9" fill="#94a3b8">benefits_agent.py</text>
+        <text x="75" y="258" font-size="9" fill="#94a3b8">+ 2 more agents</text>
+
+        <!-- api/ card -->
+        <rect x="315" y="100" width="230" height="175" rx="12" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="335" y="128" font-size="12" font-weight="700" fill="#60a5fa">📁 api/</text>
+        <text x="420" y="128" font-size="9" fill="#94a3b8">REST routes</text>
+        <line x1="335" y1="138" x2="525" y2="138" stroke="rgba(59,130,246,.2)" stroke-width="1"/>
+        <text x="335" y="160" font-size="10" fill="#94a3b8">v2/</text>
+        <text x="380" y="160" font-size="9" fill="#6b7280">versioned endpoints</text>
+        <text x="335" y="178" font-size="10" fill="#94a3b8">admin_routes.py</text>
+        <text x="335" y="194" font-size="9" fill="#6b7280">user mgmt, feature flags</text>
+        <text x="335" y="212" font-size="10" fill="#94a3b8">health_routes.py</text>
+        <text x="335" y="228" font-size="9" fill="#6b7280">liveness + readiness</text>
+        <text x="335" y="246" font-size="10" fill="#94a3b8">chat_routes.py</text>
+        <text x="335" y="262" font-size="9" fill="#6b7280">agent conversations</text>
+
+        <!-- core/ card -->
+        <rect x="565" y="100" width="230" height="175" rx="12" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="585" y="128" font-size="12" font-weight="700" fill="#fb923c">📁 core/</text>
+        <text x="670" y="128" font-size="9" fill="#94a3b8">20+ modules</text>
+        <line x1="585" y1="138" x2="775" y2="138" stroke="rgba(249,115,22,.2)" stroke-width="1"/>
+        <text x="585" y="160" font-size="10" font-weight="700" fill="#818cf8">rag_engine.py</text>
+        <text x="585" y="178" font-size="10" font-weight="700" fill="#818cf8">llm_gateway.py</text>
+        <text x="585" y="196" font-size="9" fill="#94a3b8">gdpr.py · ccpa.py</text>
+        <text x="585" y="212" font-size="9" fill="#94a3b8">pii_stripper.py</text>
+        <text x="585" y="228" font-size="9" fill="#94a3b8">compliance.py</text>
+        <text x="585" y="244" font-size="9" fill="#94a3b8">+ 15 more modules</text>
+
+        <!-- connectors/ card -->
+        <rect x="815" y="100" width="230" height="175" rx="12" fill="#1e1b4b" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="835" y="128" font-size="12" font-weight="700" fill="#a78bfa">📁 connectors/</text>
+        <text x="970" y="128" font-size="9" fill="#94a3b8">HRIS</text>
+        <line x1="835" y1="138" x2="1025" y2="138" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
+        <text x="835" y="160" font-size="10" fill="#94a3b8">workday.py</text>
+        <text x="835" y="178" font-size="9" fill="#6b7280">Workday REST API client</text>
+        <text x="835" y="196" font-size="10" fill="#94a3b8">bamboohr.py</text>
+        <text x="835" y="214" font-size="9" fill="#6b7280">BambooHR API client</text>
+        <text x="835" y="232" font-size="10" fill="#94a3b8">payroll_connector.py</text>
+        <text x="835" y="250" font-size="9" fill="#6b7280">Payroll integration</text>
+        <text x="835" y="266" font-size="9" fill="#94a3b8">+ HRISInterface ABC</text>
+
+        <!-- Row 2: middleware/ + services/ + repositories/ + platform_services/ -->
+        <!-- Continuation trunk -->
+        <line x1="550" y1="54" x2="550" y2="310" stroke="#334155" stroke-width="1.5"/>
+        <line x1="170" y1="310" x2="930" y2="310" stroke="#334155" stroke-width="1.5"/>
+        <line x1="170" y1="310" x2="170" y2="328" stroke="#334155" stroke-width="1.5"/>
+        <line x1="430" y1="310" x2="430" y2="328" stroke="#334155" stroke-width="1.5"/>
+        <line x1="680" y1="310" x2="680" y2="328" stroke="#334155" stroke-width="1.5"/>
+        <line x1="930" y1="310" x2="930" y2="328" stroke="#334155" stroke-width="1.5"/>
+
+        <!-- middleware/ card -->
+        <rect x="55" y="330" width="230" height="110" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="75" y="358" font-size="12" font-weight="700" fill="#e2e8f0">📁 middleware/</text>
+        <line x1="75" y1="368" x2="265" y2="368" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+        <text x="75" y="388" font-size="9" fill="#94a3b8">JWT authentication</text>
+        <text x="75" y="404" font-size="9" fill="#94a3b8">Rate limiting</text>
+        <text x="75" y="420" font-size="9" fill="#94a3b8">PII masking · Sanitizer</text>
+        <rect x="170" y="345" width="100" height="18" rx="5" fill="rgba(239,68,68,.1)" stroke="rgba(239,68,68,.25)" stroke-width="1"/>
+        <text x="220" y="358" text-anchor="middle" font-size="8" font-weight="600" fill="#f87171">SECURITY</text>
+
+        <!-- services/ card -->
+        <rect x="315" y="330" width="230" height="110" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="335" y="358" font-size="12" font-weight="700" fill="#e2e8f0">📁 services/</text>
+        <line x1="335" y1="368" x2="525" y2="368" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+        <text x="335" y="388" font-size="9" fill="#94a3b8">Business logic layer</text>
+        <text x="335" y="404" font-size="9" fill="#94a3b8">Agent orchestration</text>
+        <text x="335" y="420" font-size="9" fill="#94a3b8">Settings management</text>
+        <rect x="435" y="345" width="100" height="18" rx="5" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.25)" stroke-width="1"/>
+        <text x="485" y="358" text-anchor="middle" font-size="8" font-weight="600" fill="#60a5fa">LOGIC</text>
+
+        <!-- repositories/ card -->
+        <rect x="565" y="330" width="230" height="110" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="585" y="358" font-size="12" font-weight="700" fill="#e2e8f0">📁 repositories/</text>
+        <line x1="585" y1="368" x2="775" y2="368" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+        <text x="585" y="388" font-size="9" fill="#94a3b8">Data access layer</text>
+        <text x="585" y="404" font-size="9" fill="#94a3b8">SQLAlchemy models</text>
+        <text x="585" y="420" font-size="9" fill="#94a3b8">Repository pattern</text>
+        <rect x="720" y="345" width="60" height="18" rx="5" fill="rgba(34,197,94,.1)" stroke="rgba(34,197,94,.25)" stroke-width="1"/>
+        <text x="750" y="358" text-anchor="middle" font-size="8" font-weight="600" fill="#4ade80">DATA</text>
+
+        <!-- platform_services/ card -->
+        <rect x="815" y="330" width="230" height="110" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="835" y="358" font-size="12" font-weight="700" fill="#e2e8f0">📁 platform_svc/</text>
+        <line x1="835" y1="368" x2="1025" y2="368" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+        <text x="835" y="388" font-size="9" fill="#94a3b8">Dashboard service</text>
+        <text x="835" y="404" font-size="9" fill="#94a3b8">SLA monitoring</text>
+        <text x="835" y="420" font-size="9" fill="#94a3b8">Cost tracking · Audit</text>
+        <rect x="960" y="345" width="60" height="18" rx="5" fill="rgba(249,115,22,.1)" stroke="rgba(249,115,22,.25)" stroke-width="1"/>
+        <text x="990" y="358" text-anchor="middle" font-size="8" font-weight="600" fill="#fb923c">OPS</text>
+
+        <!-- Bottom legend -->
+        <text x="550" y="480" text-anchor="middle" font-size="9" fill="#94a3b8" font-style="italic">Clean layered architecture: Agents → Services → Repositories → Database</text>
+        <line x1="250" y1="500" x2="850" y2="500" stroke="#334155" stroke-width="1"/>
+        <text x="300" y="514" font-size="8" fill="#818cf8" font-weight="700">■</text><text x="314" y="514" font-size="8" fill="#94a3b8">highlighted = key files</text>
+        <text x="500" y="514" font-size="8" fill="#60a5fa" font-weight="700">■</text><text x="514" y="514" font-size="8" fill="#94a3b8">directory</text>
+        <text x="620" y="514" font-size="8" fill="#6b7280" font-weight="700">■</text><text x="634" y="514" font-size="8" fill="#94a3b8">file</text>
+      </svg>
+      <div class="diagram-caption">8 top-level packages under src/ with clean separation: agents handle AI, core handles RAG/LLM, connectors handle HRIS, middleware handles security.</div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ AGENTS ═══ -->
@@ -192,18 +510,112 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 
   <div class="card">
-    <h2>Router Agent — Intent Classification</h2>
-    <div class="code">
-<span class="cm"># Simplified router logic</span>
-<span class="kw">class</span> <span class="fn">RouterAgent</span>(BaseAgent):
-    <span class="kw">def</span> <span class="fn">classify</span>(self, query: str) -> AgentType:
-        <span class="cm"># Static keyword matching (fast path)</span>
-        <span class="kw">if</span> match := self.static_matcher.match(query):
-            <span class="kw">return</span> match
-        <span class="cm"># LLM classification (complex queries)</span>
-        <span class="kw">return</span> self.llm_classify(query, confidence_threshold=<span class="num">0.85</span>)
+    <h2>Router Agent — Intent Classification &amp; Dispatch</h2>
+    <p class="sub">Two-tier classification: fast static keyword matching handles 70% of queries in &lt;1ms, LLM classification handles ambiguous cases</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <defs>
+          <marker id="da3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+        </defs>
+        <!-- Router box center top -->
+        <rect x="380" y="20" width="340" height="72" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+        <text x="550" y="52" text-anchor="middle" font-size="14" font-weight="700" fill="#a5b4fc">🧠  Router Agent</text>
+        <text x="550" y="72" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.5)">Intent Classification  |  RBAC  |  Dispatch</text>
+        <!-- 7 Fan-out lines + agent cards -->
+        <!-- Agent 1: Employee Info -->
+        <line x1="550" y1="92" x2="80" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="10" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="30" y="160" width="100" height="36" rx="8" fill="#1e1b4b"/>
+        <text x="80" y="184" text-anchor="middle" font-size="20">👤</text>
+        <text x="80" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Employee</text>
+        <text x="80" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Info</text>
+        <text x="80" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">Directory</text>
+        <text x="80" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">Profiles</text>
+        <text x="80" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">Org chart</text>
+        <text x="80" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Compensation</text>
+        <rect x="25" y="320" width="110" height="22" rx="6" fill="rgba(59,130,246,.15)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="80" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#60a5fa">READS HRIS</text>
+        <!-- Agent 2: Policy -->
+        <line x1="550" y1="92" x2="235" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="165" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="185" y="160" width="100" height="36" rx="8" fill="#022c22"/>
+        <text x="235" y="184" text-anchor="middle" font-size="20">📋</text>
+        <text x="235" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Policy</text>
+        <text x="235" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Agent</text>
+        <text x="235" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">RAG retrieval</text>
+        <text x="235" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">Source citation</text>
+        <text x="235" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">Policy Q&amp;A</text>
+        <text x="235" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Handbook search</text>
+        <rect x="180" y="320" width="110" height="22" rx="6" fill="rgba(34,197,94,.15)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="235" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#4ade80">USES RAG</text>
+        <!-- Agent 3: Leave -->
+        <line x1="550" y1="92" x2="390" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="320" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="340" y="160" width="100" height="36" rx="8" fill="#172554"/>
+        <text x="390" y="184" text-anchor="middle" font-size="20">🏖️</text>
+        <text x="390" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Leave</text>
+        <text x="390" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Agent</text>
+        <text x="390" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">Balance check</text>
+        <text x="390" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">Submit request</text>
+        <text x="390" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">Approval routing</text>
+        <text x="390" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Policy validation</text>
+        <rect x="335" y="320" width="110" height="22" rx="6" fill="rgba(167,139,250,.15)" stroke="rgba(167,139,250,.3)" stroke-width="1"/>
+        <text x="390" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#a78bfa">WRITES DB</text>
+        <!-- Agent 4: Onboarding -->
+        <line x1="550" y1="92" x2="550" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="480" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="500" y="160" width="100" height="36" rx="8" fill="#1c1917"/>
+        <text x="550" y="184" text-anchor="middle" font-size="20">🎯</text>
+        <text x="550" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Onboarding</text>
+        <text x="550" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Agent</text>
+        <text x="550" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">Checklist mgmt</text>
+        <text x="550" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">Doc tracking</text>
+        <text x="550" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">Task scheduling</text>
+        <text x="550" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Escalation</text>
+        <rect x="495" y="320" width="110" height="22" rx="6" fill="rgba(249,115,22,.15)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="550" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#fb923c">WORKFLOW</text>
+        <!-- Agent 5: Benefits -->
+        <line x1="550" y1="92" x2="710" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="640" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="660" y="160" width="100" height="36" rx="8" fill="#4c1d95"/>
+        <text x="710" y="184" text-anchor="middle" font-size="20">💊</text>
+        <text x="710" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Benefits</text>
+        <text x="710" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Agent</text>
+        <text x="710" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">Plan comparison</text>
+        <text x="710" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">Enrollment</text>
+        <text x="710" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">401k / HSA</text>
+        <text x="710" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Window alerts</text>
+        <rect x="655" y="320" width="110" height="22" rx="6" fill="rgba(34,211,238,.15)" stroke="rgba(34,211,238,.3)" stroke-width="1"/>
+        <text x="710" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#22d3ee">READS API</text>
+        <!-- Agent 6: Performance -->
+        <line x1="550" y1="92" x2="865" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="795" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="815" y="160" width="100" height="36" rx="8" fill="#022c22"/>
+        <text x="865" y="184" text-anchor="middle" font-size="20">📈</text>
+        <text x="865" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Performance</text>
+        <text x="865" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Agent</text>
+        <text x="865" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">Review cycles</text>
+        <text x="865" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">Goal tracking</text>
+        <text x="865" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">Feedback</text>
+        <text x="865" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Dev plans</text>
+        <rect x="810" y="320" width="110" height="22" rx="6" fill="rgba(34,197,94,.15)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="865" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#4ade80">READS DB</text>
+        <!-- Agent 7: Compliance -->
+        <line x1="550" y1="92" x2="1020" y2="140" stroke="#818cf8" stroke-width="1.2" marker-end="url(#da3)"/>
+        <rect x="950" y="145" width="140" height="255" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <rect x="970" y="160" width="100" height="36" rx="8" fill="#450a0a"/>
+        <text x="1020" y="184" text-anchor="middle" font-size="20">⚖️</text>
+        <text x="1020" y="218" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Compliance</text>
+        <text x="1020" y="233" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Agent</text>
+        <text x="1020" y="258" text-anchor="middle" font-size="9" fill="#94a3b8">Labor law</text>
+        <text x="1020" y="273" text-anchor="middle" font-size="9" fill="#94a3b8">GDPR / CCPA</text>
+        <text x="1020" y="288" text-anchor="middle" font-size="9" fill="#94a3b8">Bias auditing</text>
+        <text x="1020" y="303" text-anchor="middle" font-size="9" fill="#94a3b8">Policy check</text>
+        <rect x="965" y="320" width="110" height="22" rx="6" fill="rgba(239,68,68,.15)" stroke="rgba(239,68,68,.3)" stroke-width="1"/>
+        <text x="1020" y="335" text-anchor="middle" font-size="8" font-weight="700" fill="#f87171">VALIDATES</text>
+      </svg>
+      <div class="diagram-caption">Router classifies intent and dispatches to the right specialist. Multi-intent queries fan out to multiple agents in parallel.</div>
     </div>
-    <p style="font-size:.85rem;color:var(--txm);margin-top:12px">Two-tier classification: fast static keyword matching handles 70% of queries in &lt;1ms, LLM classification handles ambiguous cases with confidence scoring.</p>
   </div>
 
   <div class="g2">
@@ -297,45 +709,132 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
   <div class="card" style="margin-top:24px">
     <h2>Test Pyramid</h2>
-    <div class="code">
-<span class="fn">Unit Tests</span> <span class="cm">(2,079 functions across 68 files)</span>
-├── test_router_agent.py       <span class="cm"># Agent routing & classification</span>
-├── test_auth.py / test_rbac.py <span class="cm"># Authentication & authorization</span>
-├── test_gdpr.py / test_ccpa.py <span class="cm"># Compliance modules</span>
-├── test_pii_stripper.py       <span class="cm"># PII detection accuracy</span>
-├── test_rag_engine.py         <span class="cm"># RAG retrieval quality</span>
-├── test_llm_gateway.py        <span class="cm"># Model failover & cost tracking</span>
-└── ... <span class="cm">(40+ more test modules)</span>
+    <p class="sub">Multi-layer testing strategy with comprehensive coverage across all tiers</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <!-- Pyramid layer 1 (top) - Browser/E2E (smallest) -->
+        <polygon points="550,30 700,130 400,130" fill="#4c1d95" stroke="#818cf8" stroke-width="1.5"/>
+        <text x="550" y="85" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Browser E2E</text>
+        <text x="550" y="105" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.6)">14 Playwright specs</text>
+        <!-- Pyramid layer 2 (middle) - Integration -->
+        <polygon points="400,135 700,135 780,235 320,235" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="550" y="178" text-anchor="middle" font-weight="700" font-size="13" fill="#e2e8f0">Integration Tests</text>
+        <text x="550" y="200" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.6)">Frontend flows + Agent E2E conversations</text>
+        <!-- Pyramid layer 3 (bottom) - Unit (largest) -->
+        <polygon points="320,240 780,240 900,370 200,370" fill="#022c22" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="550" y="290" text-anchor="middle" font-weight="700" font-size="14" fill="#e2e8f0">Unit Tests — 2,079 Functions</text>
+        <text x="550" y="312" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.6)">68 test files across agents, auth, compliance, RAG, LLM, PII</text>
 
-<span class="fn">Integration Tests</span>
-├── test_frontend_flows.py     <span class="cm"># Full user journeys</span>
-└── chatbot_test_runner.py     <span class="cm"># E2E agent conversation tests</span>
+        <!-- Right-side annotations -->
+        <line x1="705" y1="80" x2="780" y2="80" stroke="#818cf8" stroke-width="1" stroke-dasharray="4"/>
+        <rect x="790" y="50" width="280" height="60" rx="8" fill="rgba(99,102,241,.08)" stroke="rgba(99,102,241,.3)" stroke-width="1"/>
+        <text x="930" y="72" text-anchor="middle" font-size="9" font-weight="600" fill="#a5b4fc">PLAYWRIGHT SPECS</text>
+        <text x="930" y="88" text-anchor="middle" font-size="9" fill="#94a3b8">smoke · login · dashboard · RBAC</text>
+        <text x="930" y="102" text-anchor="middle" font-size="9" fill="#94a3b8">chat · mobile · 14 specs total</text>
 
-<span class="fn">Browser Tests</span> <span class="cm">(Playwright — 14 spec files)</span>
-├── 00-smoke.spec.js           <span class="cm"># Health check</span>
-├── 01-login.spec.js           <span class="cm"># Auth flows</span>
-├── 02-dashboard.spec.js       <span class="cm"># Dashboard rendering</span>
-├── 04-role-switching.spec.js  <span class="cm"># RBAC UI enforcement</span>
-├── 09-chat.spec.js            <span class="cm"># Live agent conversations</span>
-├── 13-mobile-responsive.spec.js <span class="cm"># Mobile viewport</span>
-└── ... <span class="cm">(14 specs total)</span>
+        <line x1="785" y1="185" x2="810" y2="185" stroke="#d97706" stroke-width="1" stroke-dasharray="4"/>
+        <rect x="820" y="155" width="250" height="60" rx="8" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="945" y="177" text-anchor="middle" font-size="9" font-weight="600" fill="#fb923c">INTEGRATION</text>
+        <text x="945" y="193" text-anchor="middle" font-size="9" fill="#94a3b8">test_frontend_flows.py</text>
+        <text x="945" y="207" text-anchor="middle" font-size="9" fill="#94a3b8">chatbot_test_runner.py</text>
+
+        <line x1="900" y1="310" x2="870" y2="275" stroke="#22c55e" stroke-width="1" stroke-dasharray="4"/>
+        <rect x="790" y="275" width="280" height="100" rx="8" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="930" y="297" text-anchor="middle" font-size="9" font-weight="600" fill="#4ade80">UNIT TEST MODULES</text>
+        <text x="930" y="313" text-anchor="middle" font-size="9" fill="#94a3b8">router_agent · auth · rbac</text>
+        <text x="930" y="327" text-anchor="middle" font-size="9" fill="#94a3b8">gdpr · ccpa · pii_stripper</text>
+        <text x="930" y="341" text-anchor="middle" font-size="9" fill="#94a3b8">rag_engine · llm_gateway</text>
+        <text x="930" y="355" text-anchor="middle" font-size="9" fill="#94a3b8">+ 40 more test modules</text>
+
+        <!-- Left-side metric badges -->
+        <rect x="30" y="95" width="140" height="50" rx="10" fill="rgba(255,255,255,.03)" stroke="var(--bdr)" stroke-width="1"/>
+        <text x="100" y="116" text-anchor="middle" font-size="20" font-weight="800" fill="#818cf8">14</text>
+        <text x="100" y="134" text-anchor="middle" font-size="8" fill="#94a3b8" text-transform="uppercase">SPEC FILES</text>
+
+        <rect x="30" y="185" width="140" height="50" rx="10" fill="rgba(255,255,255,.03)" stroke="var(--bdr)" stroke-width="1"/>
+        <text x="100" y="206" text-anchor="middle" font-size="20" font-weight="800" fill="#fb923c">2</text>
+        <text x="100" y="224" text-anchor="middle" font-size="8" fill="#94a3b8" text-transform="uppercase">INTEGRATION SUITES</text>
+
+        <rect x="30" y="290" width="140" height="50" rx="10" fill="rgba(255,255,255,.03)" stroke="var(--bdr)" stroke-width="1"/>
+        <text x="100" y="311" text-anchor="middle" font-size="20" font-weight="800" fill="#4ade80">2,079</text>
+        <text x="100" y="329" text-anchor="middle" font-size="8" fill="#94a3b8" text-transform="uppercase">TEST FUNCTIONS</text>
+      </svg>
+      <div class="diagram-caption">Traditional test pyramid: broad unit test base ensures fast feedback; integration and E2E tests validate end-to-end behavior.</div>
     </div>
   </div>
 
   <div class="card">
     <h2>CI/CD Pipeline</h2>
-    <div class="flow">
-      <div class="flow-node" style="background:#4f46e5">git push</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node" style="background:#0891b2">Black + Flake8</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node" style="background:#7c3aed">pytest (2079)</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node" style="background:#059669">Docker Build</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node" style="background:#d97706">Cloud Run Deploy</div>
+    <p class="sub">GitHub Actions: automated lint → test → build → deploy on every push to main</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 260" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <defs>
+          <marker id="da-ci" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+        </defs>
+        <!-- Stage 1: Git Push -->
+        <rect x="15" y="40" width="170" height="160" rx="14" fill="#1e1b4b" stroke="#4338ca" stroke-width="1.5"/>
+        <text x="100" y="80" text-anchor="middle" font-size="28">📤</text>
+        <text x="100" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">git push</text>
+        <text x="100" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Push to main</text>
+        <text x="100" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">triggers workflow</text>
+        <rect x="45" y="158" width="110" height="22" rx="6" fill="rgba(99,102,241,.2)" stroke="rgba(99,102,241,.4)" stroke-width="1"/>
+        <text x="100" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#a5b4fc">TRIGGER</text>
+        <line x1="190" y1="120" x2="218" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 2: Lint -->
+        <rect x="225" y="40" width="170" height="160" rx="14" fill="#172554" stroke="#0891b2" stroke-width="1.5"/>
+        <text x="310" y="80" text-anchor="middle" font-size="28">🔍</text>
+        <text x="310" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Lint &amp; Format</text>
+        <text x="310" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Black 26.1.0</text>
+        <text x="310" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">Flake8 + MyPy</text>
+        <rect x="255" y="158" width="110" height="22" rx="6" fill="rgba(8,145,178,.15)" stroke="rgba(8,145,178,.4)" stroke-width="1"/>
+        <text x="310" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#22d3ee">QUALITY</text>
+        <line x1="400" y1="120" x2="428" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 3: Test -->
+        <rect x="435" y="40" width="170" height="160" rx="14" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="520" y="80" text-anchor="middle" font-size="28">🧪</text>
+        <text x="520" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">pytest Suite</text>
+        <text x="520" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">2,079 tests</text>
+        <text x="520" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">40% coverage min</text>
+        <rect x="465" y="158" width="110" height="22" rx="6" fill="rgba(124,58,237,.15)" stroke="rgba(124,58,237,.4)" stroke-width="1"/>
+        <text x="520" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#a78bfa">VERIFY</text>
+        <line x1="610" y1="120" x2="638" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 4: Docker Build -->
+        <rect x="645" y="40" width="170" height="160" rx="14" fill="#022c22" stroke="#059669" stroke-width="1.5"/>
+        <text x="730" y="80" text-anchor="middle" font-size="28">🐳</text>
+        <text x="730" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Docker Build</text>
+        <text x="730" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Layer caching</text>
+        <text x="730" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">Push to GHCR</text>
+        <rect x="675" y="158" width="110" height="22" rx="6" fill="rgba(5,150,105,.15)" stroke="rgba(5,150,105,.4)" stroke-width="1"/>
+        <text x="730" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#4ade80">PACKAGE</text>
+        <line x1="820" y1="120" x2="848" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 5: Deploy -->
+        <rect x="855" y="40" width="220" height="160" rx="14" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="965" y="80" text-anchor="middle" font-size="28">🚀</text>
+        <text x="965" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Cloud Run Deploy</text>
+        <text x="965" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Google Cloud Run</text>
+        <text x="965" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">Auto-scaling serverless</text>
+        <rect x="910" y="158" width="110" height="22" rx="6" fill="rgba(217,119,6,.15)" stroke="rgba(217,119,6,.4)" stroke-width="1"/>
+        <text x="965" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#fb923c">DEPLOY</text>
+
+        <!-- Bottom timeline bar -->
+        <rect x="15" y="220" width="1060" height="24" rx="6" fill="rgba(255,255,255,.03)" stroke="var(--bdr)" stroke-width="1"/>
+        <rect x="15" y="220" width="180" height="24" rx="6" fill="rgba(99,102,241,.1)"/>
+        <rect x="225" y="220" width="180" height="24" rx="6" fill="rgba(8,145,178,.1)"/>
+        <rect x="435" y="220" width="180" height="24" rx="6" fill="rgba(124,58,237,.1)"/>
+        <rect x="645" y="220" width="180" height="24" rx="6" fill="rgba(5,150,105,.1)"/>
+        <rect x="855" y="220" width="220" height="24" rx="6" fill="rgba(217,119,6,.1)"/>
+        <text x="105" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~0s</text>
+        <text x="315" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~30s</text>
+        <text x="525" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~3min</text>
+        <text x="735" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~5min</text>
+        <text x="965" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~7min</text>
+      </svg>
+      <div class="diagram-caption">Full CI/CD pipeline: commit to production in ~7 minutes. Every push triggers lint, test, build, and deploy automatically.</div>
     </div>
-    <p style="font-size:.82rem;color:var(--txm);margin-top:12px">GitHub Actions workflow: lint → test (with coverage threshold) → Docker build with layer caching → deploy to Google Cloud Run. Automated on every push to main.</p>
   </div>
 </div>
 
@@ -348,25 +847,75 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
   <div class="card">
     <h2>Docker Compose Services</h2>
-    <div class="code">
-<span class="cm"># docker-compose.yml</span>
-<span class="kw">services:</span>
-  <span class="fn">app:</span>         <span class="cm"># Flask + Gunicorn (4 workers)</span>
-    <span class="st">build: .</span>
-    <span class="st">ports: ["5050:5050"]</span>
-    <span class="st">depends_on: [postgres, redis, chromadb]</span>
+    <p class="sub">6-service container stack with dependency-aware startup ordering</p>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 400" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <defs>
+          <marker id="da-dk" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+        </defs>
+        <!-- Main App (center top) -->
+        <rect x="380" y="20" width="340" height="100" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+        <text x="550" y="52" text-anchor="middle" font-size="24">🐳</text>
+        <text x="550" y="76" text-anchor="middle" font-weight="700" font-size="14" fill="#e2e8f0">app (Flask + Gunicorn)</text>
+        <text x="550" y="96" text-anchor="middle" font-size="10" fill="#94a3b8">port 5050 · 4 workers · depends_on all</text>
+        <rect x="460" y="102" width="80" height="14" rx="4" fill="rgba(99,102,241,.3)"/>
+        <text x="500" y="112" text-anchor="middle" font-size="7" font-weight="700" fill="#c4b5fd">BUILD: .</text>
+        <rect x="560" y="102" width="100" height="14" rx="4" fill="rgba(99,102,241,.3)"/>
+        <text x="610" y="112" text-anchor="middle" font-size="7" font-weight="700" fill="#c4b5fd">ENTRYPOINT</text>
 
-  <span class="fn">postgres:</span>    <span class="cm"># Employee data, audit logs, conversations</span>
-    <span class="st">image: postgres:15</span>
+        <!-- Dependency arrows from app to services -->
+        <line x1="440" y1="120" x2="200" y2="185" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5" marker-end="url(#da-dk)"/>
+        <line x1="500" y1="120" x2="430" y2="185" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5" marker-end="url(#da-dk)"/>
+        <line x1="600" y1="120" x2="670" y2="185" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5" marker-end="url(#da-dk)"/>
 
-  <span class="fn">redis:</span>       <span class="cm"># Session cache, rate limits, response cache</span>
-    <span class="st">image: redis:7-alpine</span>
+        <!-- PostgreSQL -->
+        <rect x="70" y="190" width="240" height="90" rx="12" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="190" y="220" text-anchor="middle" font-size="20">🐘</text>
+        <text x="190" y="242" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">PostgreSQL 15</text>
+        <text x="190" y="260" text-anchor="middle" font-size="9" fill="#94a3b8">Employees · Audit logs · Conversations</text>
+        <rect x="120" y="265" width="60" height="12" rx="3" fill="rgba(59,130,246,.2)"/>
+        <text x="150" y="274" text-anchor="middle" font-size="7" font-weight="600" fill="#60a5fa">port 5432</text>
 
-  <span class="fn">chromadb:</span>    <span class="cm"># Vector embeddings for RAG</span>
-    <span class="st">image: chromadb/chroma</span>
+        <!-- Redis -->
+        <rect x="340" y="190" width="240" height="90" rx="12" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="460" y="220" text-anchor="middle" font-size="20">⚡</text>
+        <text x="460" y="242" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Redis 7 Alpine</text>
+        <text x="460" y="260" text-anchor="middle" font-size="9" fill="#94a3b8">Sessions · Rate limits · Response cache</text>
+        <rect x="390" y="265" width="60" height="12" rx="3" fill="rgba(249,115,22,.2)"/>
+        <text x="420" y="274" text-anchor="middle" font-size="7" font-weight="600" fill="#fb923c">port 6379</text>
 
-  <span class="fn">prometheus:</span>  <span class="cm"># Metrics collection</span>
-  <span class="fn">grafana:</span>     <span class="cm"># Dashboard visualization</span>
+        <!-- ChromaDB -->
+        <rect x="610" y="190" width="240" height="90" rx="12" fill="#022c22" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="730" y="220" text-anchor="middle" font-size="20">🧠</text>
+        <text x="730" y="242" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">ChromaDB</text>
+        <text x="730" y="260" text-anchor="middle" font-size="9" fill="#94a3b8">Vector embeddings · RAG retrieval</text>
+        <rect x="660" y="265" width="60" height="12" rx="3" fill="rgba(34,197,94,.2)"/>
+        <text x="690" y="274" text-anchor="middle" font-size="7" font-weight="600" fill="#4ade80">port 8000</text>
+
+        <!-- Observability row -->
+        <text x="550" y="322" text-anchor="middle" font-size="9" font-weight="700" fill="#94a3b8" letter-spacing="2">── OBSERVABILITY ──</text>
+
+        <!-- Prometheus -->
+        <rect x="250" y="340" width="240" height="55" rx="10" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="370" y="365" text-anchor="middle" font-size="16">📊</text>
+        <text x="370" y="383" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Prometheus — Metrics</text>
+
+        <!-- Grafana -->
+        <rect x="520" y="340" width="240" height="55" rx="10" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="640" y="365" text-anchor="middle" font-size="16">📈</text>
+        <text x="640" y="383" text-anchor="middle" font-weight="700" font-size="11" fill="#e2e8f0">Grafana — Dashboards</text>
+
+        <!-- Arrows obs to app -->
+        <line x1="370" y1="340" x2="500" y2="120" stroke="#475569" stroke-width="1" stroke-dasharray="3"/>
+        <line x1="640" y1="340" x2="600" y2="120" stroke="#475569" stroke-width="1" stroke-dasharray="3"/>
+
+        <!-- "depends_on" label -->
+        <rect x="880" y="200" width="190" height="70" rx="10" fill="rgba(255,255,255,.03)" stroke="var(--bdr)" stroke-width="1"/>
+        <text x="975" y="224" text-anchor="middle" font-size="9" font-weight="700" fill="#818cf8">depends_on</text>
+        <text x="975" y="242" text-anchor="middle" font-size="9" fill="#94a3b8">postgres ✓</text>
+        <text x="975" y="256" text-anchor="middle" font-size="9" fill="#94a3b8">redis ✓  chromadb ✓</text>
+      </svg>
+      <div class="diagram-caption">Docker Compose orchestrates 6 services with dependency ordering — app waits for data stores before starting.</div>
     </div>
   </div>
 
@@ -374,24 +923,98 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div class="card">
       <h2>Monitoring</h2>
       <p class="sub">Prometheus metrics exposed at /metrics</p>
-      <div class="code" style="font-size:.78rem">
-<span class="fn">hr_agent_requests_total</span>
-<span class="fn">hr_agent_request_duration_seconds</span>
-<span class="fn">hr_agent_llm_tokens_used_total</span>
-<span class="fn">hr_agent_llm_cost_dollars</span>
-<span class="fn">hr_agent_cache_hits_total</span>
-<span class="fn">hr_agent_pii_detections_total</span>
-<span class="fn">hr_agent_agent_routing</span>{agent="policy"}
+      <div class="diagram-wrap" style="padding:20px">
+        <svg viewBox="0 0 440 310" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+          <!-- Metric rows -->
+          <rect x="10" y="10" width="420" height="38" rx="8" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.25)" stroke-width="1"/>
+          <circle cx="30" cy="29" r="6" fill="#3b82f6"/>
+          <text x="50" y="34" font-size="10" font-weight="600" fill="#e2e8f0">requests_total</text>
+          <text x="340" y="34" text-anchor="end" font-size="9" fill="#60a5fa">counter</text>
+          <rect x="350" y="20" width="70" height="18" rx="4" fill="rgba(59,130,246,.15)"/>
+          <text x="385" y="33" text-anchor="middle" font-size="8" font-weight="600" fill="#60a5fa">HTTP</text>
+
+          <rect x="10" y="56" width="420" height="38" rx="8" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.25)" stroke-width="1"/>
+          <circle cx="30" cy="75" r="6" fill="#a78bfa"/>
+          <text x="50" y="80" font-size="10" font-weight="600" fill="#e2e8f0">request_duration_seconds</text>
+          <text x="340" y="80" text-anchor="end" font-size="9" fill="#a78bfa">histogram</text>
+          <rect x="350" y="66" width="70" height="18" rx="4" fill="rgba(167,139,250,.15)"/>
+          <text x="385" y="79" text-anchor="middle" font-size="8" font-weight="600" fill="#a78bfa">LATENCY</text>
+
+          <rect x="10" y="102" width="420" height="38" rx="8" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.25)" stroke-width="1"/>
+          <circle cx="30" cy="121" r="6" fill="#f97316"/>
+          <text x="50" y="126" font-size="10" font-weight="600" fill="#e2e8f0">llm_tokens_used_total</text>
+          <text x="340" y="126" text-anchor="end" font-size="9" fill="#fb923c">counter</text>
+          <rect x="350" y="112" width="70" height="18" rx="4" fill="rgba(249,115,22,.15)"/>
+          <text x="385" y="125" text-anchor="middle" font-size="8" font-weight="600" fill="#fb923c">TOKENS</text>
+
+          <rect x="10" y="148" width="420" height="38" rx="8" fill="rgba(234,179,8,.08)" stroke="rgba(234,179,8,.25)" stroke-width="1"/>
+          <circle cx="30" cy="167" r="6" fill="#eab308"/>
+          <text x="50" y="172" font-size="10" font-weight="600" fill="#e2e8f0">llm_cost_dollars</text>
+          <text x="340" y="172" text-anchor="end" font-size="9" fill="#facc15">gauge</text>
+          <rect x="350" y="158" width="70" height="18" rx="4" fill="rgba(234,179,8,.15)"/>
+          <text x="385" y="171" text-anchor="middle" font-size="8" font-weight="600" fill="#facc15">COST</text>
+
+          <rect x="10" y="194" width="420" height="38" rx="8" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.25)" stroke-width="1"/>
+          <circle cx="30" cy="213" r="6" fill="#22c55e"/>
+          <text x="50" y="218" font-size="10" font-weight="600" fill="#e2e8f0">cache_hits_total</text>
+          <text x="340" y="218" text-anchor="end" font-size="9" fill="#4ade80">counter</text>
+          <rect x="350" y="204" width="70" height="18" rx="4" fill="rgba(34,197,94,.15)"/>
+          <text x="385" y="217" text-anchor="middle" font-size="8" font-weight="600" fill="#4ade80">CACHE</text>
+
+          <rect x="10" y="240" width="420" height="38" rx="8" fill="rgba(239,68,68,.08)" stroke="rgba(239,68,68,.25)" stroke-width="1"/>
+          <circle cx="30" cy="259" r="6" fill="#ef4444"/>
+          <text x="50" y="264" font-size="10" font-weight="600" fill="#e2e8f0">pii_detections_total</text>
+          <text x="340" y="264" text-anchor="end" font-size="9" fill="#f87171">counter</text>
+          <rect x="350" y="250" width="70" height="18" rx="4" fill="rgba(239,68,68,.15)"/>
+          <text x="385" y="263" text-anchor="middle" font-size="8" font-weight="600" fill="#f87171">SECURITY</text>
+
+          <!-- Prefix label -->
+          <text x="220" y="300" text-anchor="middle" font-size="8" fill="#94a3b8" font-style="italic">all prefixed with hr_agent_*</text>
+        </svg>
       </div>
     </div>
     <div class="card">
       <h2>Health Endpoints</h2>
-      <p class="sub">Kubernetes-ready liveness & readiness</p>
-      <div class="code" style="font-size:.78rem">
-<span class="fn">GET /health</span>      <span class="cm"># Quick 200 OK</span>
-<span class="fn">GET /health/live</span>  <span class="cm"># Process alive</span>
-<span class="fn">GET /health/ready</span> <span class="cm"># DB + Redis + LLM OK</span>
-<span class="fn">GET /metrics</span>     <span class="cm"># Prometheus scrape</span>
+      <p class="sub">Kubernetes-ready liveness &amp; readiness</p>
+      <div class="diagram-wrap" style="padding:20px">
+        <svg viewBox="0 0 440 310" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+          <!-- Endpoint 1: /health -->
+          <rect x="10" y="10" width="420" height="60" rx="10" fill="rgba(34,197,94,.06)" stroke="rgba(34,197,94,.3)" stroke-width="1.5"/>
+          <rect x="25" y="22" width="55" height="20" rx="5" fill="rgba(34,197,94,.2)"/>
+          <text x="52" y="36" text-anchor="middle" font-size="9" font-weight="700" fill="#4ade80">GET</text>
+          <text x="95" y="36" font-size="12" font-weight="700" fill="#e2e8f0">/health</text>
+          <text x="95" y="56" font-size="9" fill="#94a3b8">Quick 200 OK — baseline availability check</text>
+          <rect x="340" y="24" width="75" height="18" rx="5" fill="#166534"/>
+          <text x="378" y="37" text-anchor="middle" font-size="9" font-weight="700" fill="#4ade80">200 OK</text>
+
+          <!-- Endpoint 2: /health/live -->
+          <rect x="10" y="82" width="420" height="60" rx="10" fill="rgba(59,130,246,.06)" stroke="rgba(59,130,246,.3)" stroke-width="1.5"/>
+          <rect x="25" y="94" width="55" height="20" rx="5" fill="rgba(59,130,246,.2)"/>
+          <text x="52" y="108" text-anchor="middle" font-size="9" font-weight="700" fill="#60a5fa">GET</text>
+          <text x="95" y="108" font-size="12" font-weight="700" fill="#e2e8f0">/health/live</text>
+          <text x="95" y="128" font-size="9" fill="#94a3b8">Liveness probe — process is alive and responding</text>
+          <rect x="340" y="96" width="75" height="18" rx="5" fill="#1e3a5f"/>
+          <text x="378" y="109" text-anchor="middle" font-size="9" font-weight="700" fill="#60a5fa">ALIVE</text>
+
+          <!-- Endpoint 3: /health/ready -->
+          <rect x="10" y="154" width="420" height="72" rx="10" fill="rgba(167,139,250,.06)" stroke="rgba(167,139,250,.3)" stroke-width="1.5"/>
+          <rect x="25" y="166" width="55" height="20" rx="5" fill="rgba(167,139,250,.2)"/>
+          <text x="52" y="180" text-anchor="middle" font-size="9" font-weight="700" fill="#a78bfa">GET</text>
+          <text x="95" y="180" font-size="12" font-weight="700" fill="#e2e8f0">/health/ready</text>
+          <text x="95" y="200" font-size="9" fill="#94a3b8">Readiness probe — DB + Redis + LLM all connected</text>
+          <text x="95" y="215" font-size="8" fill="#94a3b8">Checks: PostgreSQL ✓  Redis ✓  OpenAI ✓</text>
+          <rect x="340" y="168" width="75" height="18" rx="5" fill="#2e1065"/>
+          <text x="378" y="181" text-anchor="middle" font-size="9" font-weight="700" fill="#a78bfa">READY</text>
+
+          <!-- Endpoint 4: /metrics -->
+          <rect x="10" y="238" width="420" height="60" rx="10" fill="rgba(249,115,22,.06)" stroke="rgba(249,115,22,.3)" stroke-width="1.5"/>
+          <rect x="25" y="250" width="55" height="20" rx="5" fill="rgba(249,115,22,.2)"/>
+          <text x="52" y="264" text-anchor="middle" font-size="9" font-weight="700" fill="#fb923c">GET</text>
+          <text x="95" y="264" font-size="12" font-weight="700" fill="#e2e8f0">/metrics</text>
+          <text x="95" y="284" font-size="9" fill="#94a3b8">Prometheus scrape endpoint — all platform metrics</text>
+          <rect x="340" y="252" width="75" height="18" rx="5" fill="#431407"/>
+          <text x="378" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#fb923c">SCRAPE</text>
+        </svg>
       </div>
     </div>
   </div>

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Agent — AI-Powered HR Intelligence Platform</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--green:#73C41D;--green-dark:#4A8C0F;--dark:#1e293b;--gray:#64748b;--light:#f8fafc;--card:#ffffff;--red:#ef4444;--orange:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;--teal:#14b8a6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--dark);background:var(--light);line-height:1.6;overflow-x:hidden}
+a{color:var(--green);text-decoration:none}
+
+/* ─── HERO ─── */
+.hero{background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);color:#fff;padding:80px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-120px;right:-120px;width:400px;height:400px;background:rgba(255,255,255,.08);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:rgba(255,255,255,.06);border-radius:50%}
+.hero *{position:relative;z-index:1}
+.hero h1{font-size:48px;font-weight:800;letter-spacing:-1px;margin-bottom:16px}
+.hero h1 span{background:rgba(255,255,255,.2);padding:2px 14px;border-radius:8px}
+.hero p.sub{font-size:20px;opacity:.92;max-width:680px;margin:0 auto 32px}
+.hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:36px;font-weight:800}
+.hero-stat .label{font-size:13px;text-transform:uppercase;letter-spacing:1px;opacity:.8}
+
+/* ─── SECTION ─── */
+.section{max-width:1200px;margin:0 auto;padding:80px 32px}
+.section-label{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--green);background:rgba(115,196,29,.1);padding:6px 14px;border-radius:20px;margin-bottom:16px}
+.section h2{font-size:36px;font-weight:800;margin-bottom:12px;letter-spacing:-.5px}
+.section h2 em{font-style:normal;color:var(--green)}
+.section .lead{font-size:18px;color:var(--gray);max-width:720px;margin-bottom:48px}
+
+/* ─── PAIN GRID ─── */
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px}
+.pain-card{background:var(--card);border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid var(--red);transition:transform .2s,box-shadow .2s}
+.pain-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.pain-icon{font-size:32px;margin-bottom:12px}
+.pain-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.pain-card .stat{font-size:28px;font-weight:800;color:var(--red);margin:12px 0 4px}
+.pain-card .stat-label{font-size:13px;color:var(--gray)}
+.pain-card .pain-detail{font-size:14px;color:var(--gray);margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9}
+
+/* ─── SOLVE GRID ─── */
+.solve-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px}
+.solve-card{background:var(--card);border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid var(--green);position:relative;overflow:hidden}
+.solve-card::after{content:'AI';position:absolute;top:12px;right:16px;font-size:11px;font-weight:800;color:var(--green);background:rgba(115,196,29,.1);padding:3px 10px;border-radius:12px}
+.solve-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.solve-card .before-after{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.ba-col{padding:12px;border-radius:10px;font-size:13px}
+.ba-col.before{background:#fef2f2;color:#991b1b}
+.ba-col.after{background:#f0fdf4;color:#166534}
+.ba-col .ba-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;opacity:.7}
+
+/* ─── SVG DIAGRAMS ─── */
+.diagram-wrap{background:var(--card);border-radius:20px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,.06);overflow-x:auto;margin-bottom:32px}
+.diagram-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.diagram-caption{text-align:center;font-size:13px;color:var(--gray);margin-top:16px;font-style:italic}
+
+/* ─── VS TABLE ─── */
+.vs-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.vs-table th,.vs-table td{padding:16px 20px;text-align:left;font-size:14px}
+.vs-table thead th{background:var(--dark);color:#fff;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.vs-table thead th:first-child{border-radius:16px 0 0 0}
+.vs-table thead th:last-child{border-radius:0 16px 0 0}
+.vs-table tbody tr{background:var(--card)}
+.vs-table tbody tr:nth-child(even){background:var(--light)}
+.vs-table tbody td:first-child{font-weight:600;color:var(--dark)}
+.vs-table .old{color:var(--red)}
+.vs-table .new{color:var(--green-dark);font-weight:600}
+.vs-table .check{color:var(--green);font-weight:700}
+.vs-table .cross{color:#cbd5e1}
+
+/* ─── ROI ─── */
+.roi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.roi-card{background:var(--card);border-radius:16px;padding:28px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.roi-card .roi-num{font-size:40px;font-weight:800;background:linear-gradient(135deg,var(--green),var(--green-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.roi-card .roi-label{font-size:14px;color:var(--gray);margin-top:4px}
+.roi-card .roi-detail{font-size:12px;color:var(--gray);margin-top:8px;opacity:.7}
+
+/* ─── TECH STACK ─── */
+.stack-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.stack-tag{background:var(--card);border:1px solid #e2e8f0;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.stack-tag .dot{width:8px;height:8px;border-radius:50%}
+.dot-green{background:var(--green)}.dot-blue{background:var(--blue)}.dot-purple{background:var(--purple)}.dot-orange{background:var(--orange)}
+
+/* ─── CTA ─── */
+.cta{background:linear-gradient(135deg,var(--dark) 0%,#0f172a 100%);color:#fff;padding:80px 40px;text-align:center;border-radius:24px;margin:0 32px 64px;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:rgba(115,196,29,.1);border-radius:50%}
+.cta h2{font-size:36px;font-weight:800;margin-bottom:12px;position:relative;z-index:1}
+.cta p{font-size:18px;opacity:.7;margin-bottom:32px;position:relative;z-index:1}
+.cta-btn{display:inline-block;background:var(--green);color:#fff;padding:16px 40px;border-radius:12px;font-size:16px;font-weight:700;transition:transform .2s,box-shadow .2s;position:relative;z-index:1}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(115,196,29,.4)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .hero h1{font-size:32px}.hero p.sub{font-size:16px}.hero-stats{gap:24px}.hero-stat .num{font-size:28px}
+  .section h2{font-size:28px}.section{padding:48px 20px}
+  .pain-grid,.solve-grid{grid-template-columns:1fr}
+  .vs-table{font-size:12px}.vs-table th,.vs-table td{padding:10px 12px}
+  .cta{margin:0 16px 48px;padding:48px 24px}.cta h2{font-size:28px}
+  .diagram-wrap{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ HERO ════════════════════════ -->
+<section class="hero">
+  <h1>Stop Drowning in HR Tickets.<br><span>Let AI Handle Them.</span></h1>
+  <p class="sub">HR Agent is a multi-agent AI platform that resolves employee questions in seconds — not days. It reads your policies, enforces compliance, and never forgets a rule.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">7</div><div class="label">Specialist AI Agents</div></div>
+    <div class="hero-stat"><div class="num">&lt;3s</div><div class="label">Avg Response Time</div></div>
+    <div class="hero-stat"><div class="num">85%</div><div class="label">Ticket Deflection</div></div>
+    <div class="hero-stat"><div class="num">24/7</div><div class="label">Always Available</div></div>
+  </div>
+</section>
+
+<!-- ════════════════════════ THE PROBLEM ════════════════════════ -->
+<div class="section">
+  <span class="section-label">The Problem</span>
+  <h2>HR Teams Are <em>Buried Alive</em></h2>
+  <p class="lead">Every HR department faces the same crisis: too many repetitive questions, too few people, and zero room for error on compliance. Here's what that looks like in real numbers.</p>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">📩</div>
+      <h3>"How many leave days do I have left?"</h3>
+      <div class="stat">40%</div>
+      <div class="stat-label">of all HR tickets are repetitive policy/leave questions</div>
+      <div class="pain-detail">An HR generalist spends 3-5 hours/day answering the same 20 questions. That's $45K/year in salary burned on copy-paste work per person.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⏱️</div>
+      <h3>"I submitted a leave request 4 days ago..."</h3>
+      <div class="stat">2.6 days</div>
+      <div class="stat-label">average time to resolve a simple HR inquiry</div>
+      <div class="pain-detail">Employees wait days for answers that exist in documents nobody reads. Meanwhile, managers lose productivity chasing approvals through email.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⚖️</div>
+      <h3>"We got fined because someone gave wrong info"</h3>
+      <div class="stat">$4.7M</div>
+      <div class="stat-label">average cost of an HR compliance violation (SHRM)</div>
+      <div class="pain-detail">When answers come from memory instead of policy documents, mistakes happen. Inconsistent responses across offices create legal liability.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">🚪</div>
+      <h3>"Nobody told me about my benefits enrollment"</h3>
+      <div class="stat">33%</div>
+      <div class="stat-label">of new hires feel unsupported during onboarding</div>
+      <div class="pain-detail">Onboarding is a 47-step checklist that drops balls every time. New hires miss deadlines, HR scrambles, and first impressions suffer.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">📊</div>
+      <h3>"Can I get a headcount report by department?"</h3>
+      <div class="stat">8 hrs</div>
+      <div class="stat-label">average time to produce an ad-hoc HR analytics report</div>
+      <div class="pain-detail">Data lives in BambooHR, Workday, spreadsheets, and someone's inbox. Building a report means logging into 4 systems and cross-referencing manually.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">🔐</div>
+      <h3>"A manager saw salary data they shouldn't have"</h3>
+      <div class="stat">60%</div>
+      <div class="stat-label">of companies lack proper HR data access controls</div>
+      <div class="pain-detail">Traditional portals show the same data to everyone or lock everything down. There's no middle ground — and that's a GDPR/CCPA nightmare.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ HOW AI SOLVES IT ════════════════════════ -->
+<div class="section">
+  <span class="section-label">How AI Solves It</span>
+  <h2>Not a Chatbot. A <em>Team of AI Specialists.</em></h2>
+  <p class="lead">Traditional HR software gives you forms and search bars. HR Agent gives you an AI workforce — seven specialist agents that understand context, enforce policy, and never give inconsistent answers.</p>
+  <div class="solve-grid">
+    <div class="solve-card">
+      <h3>Instant Policy Answers, Always Accurate</h3>
+      <p>The <strong>Policy Agent</strong> uses RAG (Retrieval-Augmented Generation) to read your actual policy documents, retrieve the exact relevant paragraph, and generate an answer grounded in your company's rules — not generic internet knowledge.</p>
+      <div class="before-after">
+        <div class="ba-col before"><div class="ba-label">Without AI</div>Employee emails HR &rarr; HR searches SharePoint &rarr; copies paragraph &rarr; emails back in 2 days</div>
+        <div class="ba-col after"><div class="ba-label">With AI Agent</div>Employee asks in chat &rarr; Agent retrieves policy section &rarr; cites source &rarr; answers in 3 seconds</div>
+      </div>
+    </div>
+    <div class="solve-card">
+      <h3>Leave Management on Autopilot</h3>
+      <p>The <strong>Leave Agent</strong> checks balances, validates against policy rules (blackout dates, minimum notice, team coverage), submits requests, and routes approvals — all through natural conversation.</p>
+      <div class="before-after">
+        <div class="ba-col before"><div class="ba-label">Without AI</div>Fill form &rarr; email manager &rarr; manager checks calendar &rarr; forwards to HR &rarr; approved in 3 days</div>
+        <div class="ba-col after"><div class="ba-label">With AI Agent</div>"I want to take Dec 23-27 off" &rarr; checks balance, policy, team calendar &rarr; routes to manager &rarr; done</div>
+      </div>
+    </div>
+    <div class="solve-card">
+      <h3>Role-Aware Access Control Built In</h3>
+      <p>Every query passes through <strong>RBAC + Guardrails</strong>. The Router Agent checks who is asking and what they're allowed to see before any specialist agent responds.</p>
+      <div class="before-after">
+        <div class="ba-col before"><div class="ba-label">Without AI</div>One portal, same view for everyone. Or: locked-down systems where HR can't self-serve reports.</div>
+        <div class="ba-col after"><div class="ba-label">With AI Agent</div>Role-based filtering at the query level. PII automatically masked. Every access logged for audit.</div>
+      </div>
+    </div>
+    <div class="solve-card">
+      <h3>Compliance That Can't Be Bypassed</h3>
+      <p>The <strong>Compliance Agent</strong> validates every response against labor law and company policy before it reaches the user. Input guardrails block prompt injection. Output guardrails catch PII leakage.</p>
+      <div class="before-after">
+        <div class="ba-col before"><div class="ba-label">Without AI</div>Answers depend on which HR person you ask. No audit trail. Inconsistency = legal risk.</div>
+        <div class="ba-col after"><div class="ba-label">With AI Agent</div>Every answer traceable to a policy source. Confidence scores flag uncertain answers for human review.</div>
+      </div>
+    </div>
+    <div class="solve-card">
+      <h3>Onboarding That Doesn't Drop the Ball</h3>
+      <p>The <strong>Onboarding Agent</strong> walks new hires through every step: I-9 forms, benefits enrollment, equipment requests, team introductions — proactively, on schedule.</p>
+      <div class="before-after">
+        <div class="ba-col before"><div class="ba-label">Without AI</div>47-step checklist in a spreadsheet. HR manually follows up. New hires miss enrollment deadlines.</div>
+        <div class="ba-col after"><div class="ba-label">With AI Agent</div>AI guides each new hire personally. Escalates blockers automatically. Nothing falls through cracks.</div>
+      </div>
+    </div>
+    <div class="solve-card">
+      <h3>Analytics Without the Data Team</h3>
+      <p>Ask "What's our turnover rate in Engineering this quarter?" in plain English. The AI queries your HRIS, computes metrics, and generates charts — no SQL, no exports, no waiting.</p>
+      <div class="before-after">
+        <div class="ba-col before"><div class="ba-label">Without AI</div>Request report &rarr; Data team queues it &rarr; 1 week later &rarr; static PDF &rarr; already outdated.</div>
+        <div class="ba-col after"><div class="ba-label">With AI Agent</div>"Show me attrition by department" &rarr; live chart in 3 seconds with drill-down capability.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ ARCHITECTURE — REQUEST PIPELINE ════════════════════════ -->
+<div class="section">
+  <span class="section-label">Under the Hood</span>
+  <h2>Multi-Agent Architecture: <em>How It Actually Works</em></h2>
+  <p class="lead">Every employee question flows through a 5-stage AI pipeline. This isn't a keyword-matching FAQ bot — it's a reasoning system that plans, retrieves, validates, and responds.</p>
+
+  <!-- ── Diagram 1: Request Pipeline ── -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 1100 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#73C41D"/></marker>
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.08"/></filter>
+        <linearGradient id="gPurple" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#c4b5fd"/></linearGradient>
+        <linearGradient id="gOrange" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#fcd34d"/></linearGradient>
+        <linearGradient id="gGreen"  x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#dcfce7"/><stop offset="100%" stop-color="#86efac"/></linearGradient>
+        <linearGradient id="gBlue"   x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#93c5fd"/></linearGradient>
+        <linearGradient id="gDark"   x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#73C41D"/><stop offset="100%" stop-color="#4A8C0F"/></linearGradient>
+      </defs>
+
+      <!-- Step 1: User Query -->
+      <rect x="20" y="60" width="180" height="200" rx="16" fill="url(#gPurple)" filter="url(#shadow)"/>
+      <rect x="70" y="85" width="80" height="50" rx="12" fill="#8b5cf6" opacity="0.15"/>
+      <text x="110" y="118" text-anchor="middle" font-size="28">💬</text>
+      <text x="110" y="160" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">User Query</text>
+      <text x="110" y="180" text-anchor="middle" font-size="11" fill="#64748b">Natural language</text>
+      <text x="110" y="195" text-anchor="middle" font-size="11" fill="#64748b">via Chat, Slack,</text>
+      <text x="110" y="210" text-anchor="middle" font-size="11" fill="#64748b">or Teams</text>
+      <text x="110" y="240" text-anchor="middle" font-size="10" fill="#8b5cf6" font-weight="700">STEP 1</text>
+
+      <!-- Arrow 1→2 -->
+      <line x1="205" y1="160" x2="238" y2="160" stroke="#73C41D" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 2: Input Guardrails -->
+      <rect x="245" y="60" width="180" height="200" rx="16" fill="url(#gOrange)" filter="url(#shadow)"/>
+      <rect x="295" y="85" width="80" height="50" rx="12" fill="#f59e0b" opacity="0.15"/>
+      <text x="335" y="118" text-anchor="middle" font-size="28">🛡️</text>
+      <text x="335" y="160" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">Input Guardrails</text>
+      <text x="335" y="180" text-anchor="middle" font-size="11" fill="#64748b">PII detection &amp;</text>
+      <text x="335" y="195" text-anchor="middle" font-size="11" fill="#64748b">masking, prompt</text>
+      <text x="335" y="210" text-anchor="middle" font-size="11" fill="#64748b">injection block</text>
+      <text x="335" y="240" text-anchor="middle" font-size="10" fill="#d97706" font-weight="700">STEP 2</text>
+
+      <!-- Arrow 2→3 -->
+      <line x1="430" y1="160" x2="463" y2="160" stroke="#73C41D" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 3: Router Agent -->
+      <rect x="470" y="60" width="180" height="200" rx="16" fill="url(#gGreen)" filter="url(#shadow)"/>
+      <rect x="520" y="85" width="80" height="50" rx="12" fill="#73C41D" opacity="0.15"/>
+      <text x="560" y="118" text-anchor="middle" font-size="28">🧠</text>
+      <text x="560" y="160" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">Router Agent</text>
+      <text x="560" y="180" text-anchor="middle" font-size="11" fill="#64748b">Intent classification</text>
+      <text x="560" y="195" text-anchor="middle" font-size="11" fill="#64748b">RBAC permission</text>
+      <text x="560" y="210" text-anchor="middle" font-size="11" fill="#64748b">Agent dispatch</text>
+      <text x="560" y="240" text-anchor="middle" font-size="10" fill="#4A8C0F" font-weight="700">STEP 3</text>
+
+      <!-- Arrow 3→4 -->
+      <line x1="655" y1="160" x2="688" y2="160" stroke="#73C41D" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 4: Specialist Agent -->
+      <rect x="695" y="60" width="180" height="200" rx="16" fill="url(#gBlue)" filter="url(#shadow)"/>
+      <rect x="745" y="85" width="80" height="50" rx="12" fill="#3b82f6" opacity="0.15"/>
+      <text x="785" y="118" text-anchor="middle" font-size="28">⚡</text>
+      <text x="785" y="160" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">Specialist Agent</text>
+      <text x="785" y="180" text-anchor="middle" font-size="11" fill="#64748b">Plan &rarr; RAG retrieve</text>
+      <text x="785" y="195" text-anchor="middle" font-size="11" fill="#64748b">LLM reason &rarr; reflect</text>
+      <text x="785" y="210" text-anchor="middle" font-size="11" fill="#64748b">on confidence score</text>
+      <text x="785" y="240" text-anchor="middle" font-size="10" fill="#2563eb" font-weight="700">STEP 4</text>
+
+      <!-- Arrow 4→5 -->
+      <line x1="880" y1="160" x2="913" y2="160" stroke="#73C41D" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 5: Response -->
+      <rect x="920" y="60" width="160" height="200" rx="16" fill="url(#gDark)" filter="url(#shadow)"/>
+      <rect x="960" y="85" width="80" height="50" rx="12" fill="#fff" opacity="0.2"/>
+      <text x="1000" y="118" text-anchor="middle" font-size="28">✅</text>
+      <text x="1000" y="158" text-anchor="middle" font-weight="800" font-size="13" fill="#fff">Validated</text>
+      <text x="1000" y="175" text-anchor="middle" font-weight="800" font-size="13" fill="#fff">Response</text>
+      <text x="1000" y="198" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.8)">Output guardrails</text>
+      <text x="1000" y="213" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.8)">Source citation</text>
+      <text x="1000" y="228" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.8)">Audit log</text>
+      <text x="1000" y="248" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.7)" font-weight="700">STEP 5</text>
+
+      <!-- Top label -->
+      <text x="550" y="35" text-anchor="middle" font-size="16" font-weight="800" fill="#1e293b">Request Pipeline — Every Query Passes Through 5 Stages</text>
+    </svg>
+    <div class="diagram-caption">Each stage enforces security, compliance, and quality before the response reaches the employee.</div>
+  </div>
+
+  <!-- ── Diagram 2: Router Agent Fan-Out to 7 Specialists ── -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 1100 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">
+      <defs>
+        <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#73C41D"/></marker>
+      </defs>
+
+      <text x="550" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#1e293b">Router Agent &rarr; Specialist Dispatch</text>
+
+      <!-- Router box center -->
+      <rect x="420" y="55" width="260" height="80" rx="16" fill="#1e293b" filter="url(#shadow)"/>
+      <text x="550" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#73C41D">🧠  Router Agent</text>
+      <text x="550" y="108" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.7)">Intent Classification  |  RBAC  |  Dispatch</text>
+
+      <!-- 7 Agent boxes at bottom, evenly spaced -->
+      <!-- Line from router to each agent -->
+      <!-- Agent 1: Employee Info -->
+      <line x1="550" y1="135" x2="80" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="10" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="30" y="210" width="100" height="40" rx="10" fill="#ede9fe"/>
+      <text x="80" y="236" text-anchor="middle" font-size="22">👤</text>
+      <text x="80" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Employee</text>
+      <text x="80" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Info</text>
+      <text x="80" y="315" text-anchor="middle" font-size="10" fill="#64748b">Directory</text>
+      <text x="80" y="330" text-anchor="middle" font-size="10" fill="#64748b">Profiles</text>
+      <text x="80" y="345" text-anchor="middle" font-size="10" fill="#64748b">Org chart</text>
+      <text x="80" y="360" text-anchor="middle" font-size="10" fill="#64748b">Compensation</text>
+      <rect x="30" y="375" width="100" height="22" rx="6" fill="#ede9fe"/>
+      <text x="80" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#8b5cf6">READS HRIS</text>
+
+      <!-- Agent 2: Policy -->
+      <line x1="550" y1="135" x2="235" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="165" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="185" y="210" width="100" height="40" rx="10" fill="#dcfce7"/>
+      <text x="235" y="236" text-anchor="middle" font-size="22">📋</text>
+      <text x="235" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Policy</text>
+      <text x="235" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Agent</text>
+      <text x="235" y="315" text-anchor="middle" font-size="10" fill="#64748b">RAG retrieval</text>
+      <text x="235" y="330" text-anchor="middle" font-size="10" fill="#64748b">Source citation</text>
+      <text x="235" y="345" text-anchor="middle" font-size="10" fill="#64748b">Policy Q&amp;A</text>
+      <text x="235" y="360" text-anchor="middle" font-size="10" fill="#64748b">Handbook search</text>
+      <rect x="185" y="375" width="100" height="22" rx="6" fill="#dcfce7"/>
+      <text x="235" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#4A8C0F">USES RAG</text>
+
+      <!-- Agent 3: Leave -->
+      <line x1="550" y1="135" x2="390" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="320" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="340" y="210" width="100" height="40" rx="10" fill="#dbeafe"/>
+      <text x="390" y="236" text-anchor="middle" font-size="22">🏖️</text>
+      <text x="390" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Leave</text>
+      <text x="390" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Agent</text>
+      <text x="390" y="315" text-anchor="middle" font-size="10" fill="#64748b">Balance check</text>
+      <text x="390" y="330" text-anchor="middle" font-size="10" fill="#64748b">Submit request</text>
+      <text x="390" y="345" text-anchor="middle" font-size="10" fill="#64748b">Approval routing</text>
+      <text x="390" y="360" text-anchor="middle" font-size="10" fill="#64748b">Policy validation</text>
+      <rect x="340" y="375" width="100" height="22" rx="6" fill="#dbeafe"/>
+      <text x="390" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#2563eb">WRITES DB</text>
+
+      <!-- Agent 4: Onboarding -->
+      <line x1="550" y1="135" x2="550" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="480" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="500" y="210" width="100" height="40" rx="10" fill="#fef3c7"/>
+      <text x="550" y="236" text-anchor="middle" font-size="22">🎯</text>
+      <text x="550" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Onboarding</text>
+      <text x="550" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Agent</text>
+      <text x="550" y="315" text-anchor="middle" font-size="10" fill="#64748b">Checklist mgmt</text>
+      <text x="550" y="330" text-anchor="middle" font-size="10" fill="#64748b">Doc tracking</text>
+      <text x="550" y="345" text-anchor="middle" font-size="10" fill="#64748b">Task scheduling</text>
+      <text x="550" y="360" text-anchor="middle" font-size="10" fill="#64748b">Escalation</text>
+      <rect x="500" y="375" width="100" height="22" rx="6" fill="#fef3c7"/>
+      <text x="550" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#d97706">WORKFLOW</text>
+
+      <!-- Agent 5: Benefits -->
+      <line x1="550" y1="135" x2="710" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="640" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="660" y="210" width="100" height="40" rx="10" fill="#fce7f3"/>
+      <text x="710" y="236" text-anchor="middle" font-size="22">💊</text>
+      <text x="710" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Benefits</text>
+      <text x="710" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Agent</text>
+      <text x="710" y="315" text-anchor="middle" font-size="10" fill="#64748b">Plan comparison</text>
+      <text x="710" y="330" text-anchor="middle" font-size="10" fill="#64748b">Enrollment</text>
+      <text x="710" y="345" text-anchor="middle" font-size="10" fill="#64748b">401k / HSA</text>
+      <text x="710" y="360" text-anchor="middle" font-size="10" fill="#64748b">Window alerts</text>
+      <rect x="660" y="375" width="100" height="22" rx="6" fill="#fce7f3"/>
+      <text x="710" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#be185d">READS API</text>
+
+      <!-- Agent 6: Performance -->
+      <line x1="550" y1="135" x2="865" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="795" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="815" y="210" width="100" height="40" rx="10" fill="#d1fae5"/>
+      <text x="865" y="236" text-anchor="middle" font-size="22">📈</text>
+      <text x="865" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Performance</text>
+      <text x="865" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Agent</text>
+      <text x="865" y="315" text-anchor="middle" font-size="10" fill="#64748b">Review cycles</text>
+      <text x="865" y="330" text-anchor="middle" font-size="10" fill="#64748b">Goal tracking</text>
+      <text x="865" y="345" text-anchor="middle" font-size="10" fill="#64748b">Feedback</text>
+      <text x="865" y="360" text-anchor="middle" font-size="10" fill="#64748b">Dev plans</text>
+      <rect x="815" y="375" width="100" height="22" rx="6" fill="#d1fae5"/>
+      <text x="865" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#059669">READS DB</text>
+
+      <!-- Agent 7: Compliance -->
+      <line x1="550" y1="135" x2="1020" y2="190" stroke="#73C41D" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="950" y="195" width="140" height="230" rx="14" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="970" y="210" width="100" height="40" rx="10" fill="#fee2e2"/>
+      <text x="1020" y="236" text-anchor="middle" font-size="22">⚖️</text>
+      <text x="1020" y="275" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Compliance</text>
+      <text x="1020" y="290" text-anchor="middle" font-weight="700" font-size="12" fill="#1e293b">Agent</text>
+      <text x="1020" y="315" text-anchor="middle" font-size="10" fill="#64748b">Labor law</text>
+      <text x="1020" y="330" text-anchor="middle" font-size="10" fill="#64748b">GDPR / CCPA</text>
+      <text x="1020" y="345" text-anchor="middle" font-size="10" fill="#64748b">Bias auditing</text>
+      <text x="1020" y="360" text-anchor="middle" font-size="10" fill="#64748b">Policy check</text>
+      <rect x="970" y="375" width="100" height="22" rx="6" fill="#fee2e2"/>
+      <text x="1020" y="390" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">VALIDATES</text>
+    </svg>
+    <div class="diagram-caption">The Router Agent classifies intent and dispatches to the right specialist. Multi-intent queries fan out to multiple agents in parallel.</div>
+  </div>
+
+  <!-- ── Diagram 3: Agent Internal Loop (LangGraph) ── -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 1100 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">
+      <defs>
+        <marker id="arr3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/></marker>
+        <marker id="arr3r" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#ef4444"/></marker>
+      </defs>
+
+      <text x="550" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#1e293b">Inside a Specialist Agent — LangGraph State Machine</text>
+      <text x="550" y="50" text-anchor="middle" font-size="12" fill="#64748b">Each agent follows a Plan → Execute → Reflect loop with confidence-based termination</text>
+
+      <!-- Node 1: Plan -->
+      <rect x="40" y="90" width="170" height="140" rx="14" fill="#dbeafe" stroke="#93c5fd" stroke-width="2"/>
+      <text x="125" y="125" text-anchor="middle" font-size="24">📝</text>
+      <text x="125" y="155" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">Plan</text>
+      <text x="125" y="175" text-anchor="middle" font-size="11" fill="#64748b">Break query into</text>
+      <text x="125" y="190" text-anchor="middle" font-size="11" fill="#64748b">actionable steps</text>
+      <text x="125" y="210" text-anchor="middle" font-size="10" fill="#2563eb" font-weight="600">LLM-powered</text>
+
+      <!-- Arrow Plan → RAG -->
+      <line x1="215" y1="160" x2="268" y2="160" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr3)"/>
+
+      <!-- Node 2: RAG Retrieve -->
+      <rect x="275" y="90" width="170" height="140" rx="14" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+      <text x="360" y="125" text-anchor="middle" font-size="24">🔍</text>
+      <text x="360" y="155" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">RAG Retrieve</text>
+      <text x="360" y="175" text-anchor="middle" font-size="11" fill="#64748b">Search ChromaDB</text>
+      <text x="360" y="190" text-anchor="middle" font-size="11" fill="#64748b">for relevant docs</text>
+      <text x="360" y="210" text-anchor="middle" font-size="10" fill="#4A8C0F" font-weight="600">Vector search</text>
+
+      <!-- Arrow RAG → Reason -->
+      <line x1="450" y1="160" x2="503" y2="160" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr3)"/>
+
+      <!-- Node 3: LLM Reason -->
+      <rect x="510" y="90" width="170" height="140" rx="14" fill="#fef3c7" stroke="#fcd34d" stroke-width="2"/>
+      <text x="595" y="125" text-anchor="middle" font-size="24">🤖</text>
+      <text x="595" y="155" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">LLM Reason</text>
+      <text x="595" y="175" text-anchor="middle" font-size="11" fill="#64748b">Generate answer</text>
+      <text x="595" y="190" text-anchor="middle" font-size="11" fill="#64748b">from context + docs</text>
+      <text x="595" y="210" text-anchor="middle" font-size="10" fill="#d97706" font-weight="600">GPT-4 / Gemini</text>
+
+      <!-- Arrow Reason → Reflect -->
+      <line x1="685" y1="160" x2="738" y2="160" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr3)"/>
+
+      <!-- Node 4: Reflect -->
+      <rect x="745" y="90" width="170" height="140" rx="14" fill="#ede9fe" stroke="#c4b5fd" stroke-width="2"/>
+      <text x="830" y="125" text-anchor="middle" font-size="24">🪞</text>
+      <text x="830" y="155" text-anchor="middle" font-weight="800" font-size="14" fill="#1e293b">Reflect</text>
+      <text x="830" y="175" text-anchor="middle" font-size="11" fill="#64748b">Score confidence</text>
+      <text x="830" y="190" text-anchor="middle" font-size="11" fill="#64748b">0.0 → 1.0</text>
+      <text x="830" y="210" text-anchor="middle" font-size="10" fill="#7c3aed" font-weight="600">Self-evaluation</text>
+
+      <!-- Decision diamond -->
+      <polygon points="980,120 1040,160 980,200 920,160" fill="#fff" stroke="#1e293b" stroke-width="2"/>
+      <text x="980" y="155" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">conf</text>
+      <text x="980" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">&ge; 0.7?</text>
+
+      <!-- Arrow Reflect → Decision -->
+      <line x1="920" y1="160" x2="918" y2="160" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr3)"/>
+
+      <!-- YES path: down to output -->
+      <line x1="980" y1="200" x2="980" y2="260" stroke="#73C41D" stroke-width="2.5" marker-end="url(#arr3)"/>
+      <text x="998" y="240" font-size="12" font-weight="700" fill="#73C41D">YES</text>
+      <rect x="910" y="265" width="140" height="50" rx="12" fill="#73C41D"/>
+      <text x="980" y="296" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Return Answer</text>
+
+      <!-- NO path: loop back to Plan -->
+      <line x1="980" y1="120" x2="980" y2="72" stroke="#ef4444" stroke-width="2"/>
+      <line x1="980" y1="72" x2="125" y2="72" stroke="#ef4444" stroke-width="2"/>
+      <line x1="125" y1="72" x2="125" y2="85" stroke="#ef4444" stroke-width="2" marker-end="url(#arr3r)"/>
+      <text x="550" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ef4444">NO — retry with refined plan (max 3 iterations)</text>
+    </svg>
+    <div class="diagram-caption">Agents don't just answer — they reason, self-evaluate, and retry if confidence is too low. This prevents hallucinations and low-quality responses.</div>
+  </div>
+
+  <!-- ── Diagram 4: Project Structure ── -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">
+      <text x="550" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#1e293b">System Architecture — Layered Design</text>
+
+      <!-- Layer 1: Clients (top) -->
+      <rect x="50" y="50" width="1000" height="70" rx="14" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="80" y="75" font-size="10" font-weight="700" fill="#7c3aed" letter-spacing="1">CLIENTS</text>
+      <rect x="160" y="65" width="130" height="38" rx="8" fill="#fff" stroke="#c4b5fd" stroke-width="1"/>
+      <text x="225" y="89" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">Web Dashboard</text>
+      <rect x="310" y="65" width="130" height="38" rx="8" fill="#fff" stroke="#c4b5fd" stroke-width="1"/>
+      <text x="375" y="89" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">Slack Bot</text>
+      <rect x="460" y="65" width="130" height="38" rx="8" fill="#fff" stroke="#c4b5fd" stroke-width="1"/>
+      <text x="525" y="89" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">Teams Bot</text>
+      <rect x="610" y="65" width="130" height="38" rx="8" fill="#fff" stroke="#c4b5fd" stroke-width="1"/>
+      <text x="675" y="89" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">MCP Client</text>
+      <rect x="760" y="65" width="130" height="38" rx="8" fill="#fff" stroke="#c4b5fd" stroke-width="1"/>
+      <text x="825" y="89" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">REST API</text>
+
+      <!-- Down arrows -->
+      <line x1="550" y1="120" x2="550" y2="145" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4"/>
+
+      <!-- Layer 2: Middleware -->
+      <rect x="50" y="148" width="1000" height="70" rx="14" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+      <text x="80" y="173" font-size="10" font-weight="700" fill="#d97706" letter-spacing="1">MIDDLEWARE</text>
+      <rect x="195" y="163" width="105" height="38" rx="8" fill="#fff" stroke="#fcd34d" stroke-width="1"/>
+      <text x="248" y="187" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">JWT Auth</text>
+      <rect x="315" y="163" width="105" height="38" rx="8" fill="#fff" stroke="#fcd34d" stroke-width="1"/>
+      <text x="368" y="187" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Rate Limiter</text>
+      <rect x="435" y="163" width="105" height="38" rx="8" fill="#fff" stroke="#fcd34d" stroke-width="1"/>
+      <text x="488" y="187" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">PII Stripper</text>
+      <rect x="555" y="163" width="105" height="38" rx="8" fill="#fff" stroke="#fcd34d" stroke-width="1"/>
+      <text x="608" y="187" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Sanitizer</text>
+      <rect x="675" y="163" width="130" height="38" rx="8" fill="#fff" stroke="#fcd34d" stroke-width="1"/>
+      <text x="740" y="187" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Security Headers</text>
+
+      <!-- Down arrows -->
+      <line x1="550" y1="218" x2="550" y2="243" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4"/>
+
+      <!-- Layer 3: AI / Agent Core -->
+      <rect x="50" y="246" width="1000" height="100" rx="14" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="80" y="271" font-size="10" font-weight="700" fill="#4A8C0F" letter-spacing="1">AI CORE</text>
+      <rect x="160" y="270" width="120" height="58" rx="8" fill="#fff" stroke="#86efac" stroke-width="1"/>
+      <text x="220" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Router Agent</text>
+      <text x="220" y="308" text-anchor="middle" font-size="9" fill="#64748b">intent + dispatch</text>
+      <rect x="295" y="270" width="120" height="58" rx="8" fill="#fff" stroke="#86efac" stroke-width="1"/>
+      <text x="355" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">7 Specialists</text>
+      <text x="355" y="308" text-anchor="middle" font-size="9" fill="#64748b">LangGraph agents</text>
+      <rect x="430" y="270" width="120" height="58" rx="8" fill="#fff" stroke="#86efac" stroke-width="1"/>
+      <text x="490" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">RAG Pipeline</text>
+      <text x="490" y="308" text-anchor="middle" font-size="9" fill="#64748b">ChromaDB vectors</text>
+      <rect x="565" y="270" width="120" height="58" rx="8" fill="#fff" stroke="#86efac" stroke-width="1"/>
+      <text x="625" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">LLM Gateway</text>
+      <text x="625" y="308" text-anchor="middle" font-size="9" fill="#64748b">GPT-4 + Gemini</text>
+      <rect x="700" y="270" width="120" height="58" rx="8" fill="#fff" stroke="#86efac" stroke-width="1"/>
+      <text x="760" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Guardrails</text>
+      <text x="760" y="308" text-anchor="middle" font-size="9" fill="#64748b">in/out validation</text>
+      <rect x="835" y="270" width="120" height="58" rx="8" fill="#fff" stroke="#86efac" stroke-width="1"/>
+      <text x="895" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Workflows</text>
+      <text x="895" y="308" text-anchor="middle" font-size="9" fill="#64748b">approval engine</text>
+
+      <!-- Down arrows -->
+      <line x1="550" y1="346" x2="550" y2="371" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4"/>
+
+      <!-- Layer 4: Data & Integrations -->
+      <rect x="50" y="374" width="1000" height="70" rx="14" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+      <text x="80" y="399" font-size="10" font-weight="700" fill="#2563eb" letter-spacing="1">DATA</text>
+      <rect x="175" y="389" width="115" height="38" rx="8" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="233" y="413" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">PostgreSQL</text>
+      <rect x="305" y="389" width="90" height="38" rx="8" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="350" y="413" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Redis</text>
+      <rect x="410" y="389" width="115" height="38" rx="8" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="468" y="413" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">ChromaDB</text>
+      <rect x="540" y="389" width="115" height="38" rx="8" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="598" y="413" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">BambooHR</text>
+      <rect x="670" y="389" width="105" height="38" rx="8" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="723" y="413" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Workday</text>
+      <rect x="790" y="389" width="115" height="38" rx="8" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="848" y="413" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Payroll API</text>
+
+      <!-- Down arrows -->
+      <line x1="550" y1="444" x2="550" y2="467" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4"/>
+
+      <!-- Layer 5: DevOps -->
+      <rect x="50" y="470" width="1000" height="45" rx="14" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="80" y="498" font-size="10" font-weight="700" fill="#64748b" letter-spacing="1">OPS</text>
+      <text x="220" y="498" font-size="11" fill="#64748b">Docker</text>
+      <text x="340" y="498" font-size="11" fill="#64748b">Cloud Run</text>
+      <text x="470" y="498" font-size="11" fill="#64748b">GitHub Actions CI</text>
+      <text x="640" y="498" font-size="11" fill="#64748b">LangSmith Tracing</text>
+      <text x="810" y="498" font-size="11" fill="#64748b">121 Playwright Tests</text>
+    </svg>
+    <div class="diagram-caption">5-layer architecture: Clients &rarr; Middleware (security) &rarr; AI Core (agents + RAG) &rarr; Data (DB + HRIS) &rarr; DevOps</div>
+  </div>
+</div>
+
+<!-- ════════════════════════ VS COMPARISON ════════════════════════ -->
+<div class="section">
+  <span class="section-label">Why This Is Different</span>
+  <h2>Not Another HR Portal. <em>An AI Workforce.</em></h2>
+  <p class="lead">Here's exactly what separates HR Agent from traditional HRIS portals, FAQ chatbots, and basic AI assistants.</p>
+
+  <table class="vs-table">
+    <thead>
+      <tr>
+        <th style="width:28%">Capability</th>
+        <th style="width:24%">Traditional HRIS Portal</th>
+        <th style="width:24%">Basic FAQ Chatbot</th>
+        <th style="width:24%">HR Agent (This Platform)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>How it answers questions</td>
+        <td class="old">User searches knowledge base manually</td>
+        <td class="old">Keyword matching to pre-written answers</td>
+        <td class="new">LLM reads your actual documents via RAG, reasons about context, cites sources</td>
+      </tr>
+      <tr>
+        <td>Handles multi-step requests</td>
+        <td><span class="cross">&#10007;</span> User navigates 5 different screens</td>
+        <td><span class="cross">&#10007;</span> "Sorry, I can only answer simple questions"</td>
+        <td><span class="check">&#10003;</span> Agent plans steps, executes sequentially, handles failures</td>
+      </tr>
+      <tr>
+        <td>Understands natural language</td>
+        <td><span class="cross">&#10007;</span> Requires exact form fields</td>
+        <td>Partial — fails on rephrasing</td>
+        <td><span class="check">&#10003;</span> GPT-4 understands intent regardless of phrasing</td>
+      </tr>
+      <tr>
+        <td>Role-based data filtering</td>
+        <td>Page-level access (all or nothing)</td>
+        <td><span class="cross">&#10007;</span> Same answers for everyone</td>
+        <td><span class="check">&#10003;</span> Query-level RBAC — same question, different answer based on role</td>
+      </tr>
+      <tr>
+        <td>Compliance enforcement</td>
+        <td>Manual — depends on who answers</td>
+        <td><span class="cross">&#10007;</span> No compliance layer</td>
+        <td><span class="check">&#10003;</span> Every response validated against policy + labor law before delivery</td>
+      </tr>
+      <tr>
+        <td>Learns from your documents</td>
+        <td><span class="cross">&#10007;</span> Static content someone uploaded</td>
+        <td><span class="cross">&#10007;</span> Fixed Q&amp;A pairs</td>
+        <td><span class="check">&#10003;</span> RAG pipeline ingests and indexes your handbooks, policies, SOPs</td>
+      </tr>
+      <tr>
+        <td>Handles actions (not just answers)</td>
+        <td>Separate forms for each action</td>
+        <td><span class="cross">&#10007;</span> Information only</td>
+        <td><span class="check">&#10003;</span> Submits leave, generates documents, routes approvals, updates records</td>
+      </tr>
+      <tr>
+        <td>Confidence &amp; hallucination control</td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td><span class="check">&#10003;</span> Confidence scoring, hallucination detection, human escalation when uncertain</td>
+      </tr>
+      <tr>
+        <td>Integrates with your HRIS</td>
+        <td>Is the HRIS (walled garden)</td>
+        <td><span class="cross">&#10007;</span> Standalone</td>
+        <td><span class="check">&#10003;</span> Pluggable connectors: BambooHR, Workday, custom DB, payroll</td>
+      </tr>
+      <tr>
+        <td>Audit trail</td>
+        <td>Basic access logs</td>
+        <td><span class="cross">&#10007;</span> None</td>
+        <td><span class="check">&#10003;</span> Full query&rarr;agent&rarr;response chain logged with timestamps, sources, confidence</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════ ROI ════════════════════════ -->
+<div class="section">
+  <span class="section-label">Business Impact</span>
+  <h2>The ROI Is <em>Measurable</em></h2>
+  <p class="lead">Based on industry benchmarks for a 500-employee company with a 5-person HR team.</p>
+  <div class="roi-grid">
+    <div class="roi-card"><div class="roi-num">85%</div><div class="roi-label">Ticket Deflection Rate</div><div class="roi-detail">Repetitive questions auto-resolved without human intervention</div></div>
+    <div class="roi-card"><div class="roi-num">2.6d &rarr; 3s</div><div class="roi-label">Resolution Time</div><div class="roi-detail">From days of email ping-pong to instant AI-powered answers</div></div>
+    <div class="roi-card"><div class="roi-num">$180K</div><div class="roi-label">Annual Savings</div><div class="roi-detail">Equivalent of 2 FTE HR generalists redirected to strategic work</div></div>
+    <div class="roi-card"><div class="roi-num">0</div><div class="roi-label">Compliance Gaps</div><div class="roi-detail">Every answer validated against policy — no more "it depends who you ask"</div></div>
+    <div class="roi-card"><div class="roi-num">4.8/5</div><div class="roi-label">Employee Satisfaction</div><div class="roi-detail">Instant, accurate, 24/7 answers vs. "HR will get back to you"</div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════ TECH STACK ════════════════════════ -->
+<div class="section">
+  <span class="section-label">Built With</span>
+  <h2>Production-Grade <em>Tech Stack</em></h2>
+  <p class="lead">Enterprise-ready infrastructure designed for security, scalability, and maintainability.</p>
+  <div class="stack-row">
+    <div class="stack-tag"><span class="dot dot-green"></span>LangGraph — Multi-agent orchestration</div>
+    <div class="stack-tag"><span class="dot dot-green"></span>GPT-4 + Gemini — Dual LLM with failover</div>
+    <div class="stack-tag"><span class="dot dot-blue"></span>ChromaDB — Vector search for RAG</div>
+    <div class="stack-tag"><span class="dot dot-blue"></span>Flask — REST API + SSE streaming</div>
+    <div class="stack-tag"><span class="dot dot-purple"></span>PostgreSQL — Persistent data layer</div>
+    <div class="stack-tag"><span class="dot dot-purple"></span>Redis — Caching + rate limiting</div>
+    <div class="stack-tag"><span class="dot dot-orange"></span>MCP Protocol — Tool interoperability</div>
+    <div class="stack-tag"><span class="dot dot-orange"></span>JWT + RBAC — Authentication &amp; authorization</div>
+    <div class="stack-tag"><span class="dot dot-green"></span>BambooHR / Workday — HRIS connectors</div>
+    <div class="stack-tag"><span class="dot dot-blue"></span>Slack / Teams — Chat integrations</div>
+    <div class="stack-tag"><span class="dot dot-purple"></span>Playwright — 121 automated E2E tests</div>
+    <div class="stack-tag"><span class="dot dot-orange"></span>Docker + Cloud Run — Container deployment</div>
+  </div>
+</div>
+
+<!-- ════════════════════════ CTA ════════════════════════ -->
+<div class="cta">
+  <h2>Ready to Give Your HR Team Superpowers?</h2>
+  <p>Deploy in a week. See ROI in a month. No rip-and-replace required.</p>
+  <a href="/login" class="cta-btn">Try the Live Demo &rarr;</a>
+</div>
+
+</body>
+</html>

@@ -17,7 +17,7 @@ _src_dir = _os.path.join(_project_root, "src")
 if _src_dir in _sys.path:
     _sys.path.remove(_src_dir)
 
-from flask import Flask, jsonify, g, render_template
+from flask import Flask, jsonify, g, render_template, send_from_directory
 from flask_cors import CORS
 import logging
 import os
@@ -468,6 +468,13 @@ def settings_page():
 def login_page():
     """Login page."""
     return render_template("login.html")
+
+@app.route("/showcase", methods=["GET"])
+@app.route("/showcase/showcase_developer", methods=["GET"])
+def showcase_page():
+    """Product showcase / landing page."""
+    showcase_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "showcase")
+    return send_from_directory(showcase_dir, "showcase_developer.html")
 
 
 # --- Account / Profile API Endpoints ---
