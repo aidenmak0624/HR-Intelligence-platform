@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤖 HR Agent Platform
+# 🤖 HR Intelligence Platform
 
 **Enterprise-Grade Multi-Agent AI System for Autonomous HR Operations**
 
@@ -8,9 +8,9 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-0.2-1C3C3C?style=flat&logo=langchain&logoColor=white)](https://langchain-ai.github.io/langgraph/)
 [![Tests](https://img.shields.io/badge/Tests-1%2C909_Passing-brightgreen?style=flat&logo=pytest&logoColor=white)](#testing)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
-[![GCP](https://img.shields.io/badge/Deployed-GCP_Cloud_Run-4285F4?style=flat&logo=googlecloud&logoColor=white)](https://hr-platform-837558695367.us-central1.run.app/dashboard)
+[![GCP](https://img.shields.io/badge/Deployed-GCP_Cloud_Run-4285F4?style=flat&logo=googlecloud&logoColor=white)](https://hr-platform-1054475963653.us-central1.run.app/dashboard)
 
-[Live Demo](https://hr-platform-837558695367.us-central1.run.app/dashboard) · [Architecture](#architecture) · [Quick Start](#quick-start) · [Vibe Coding Journey](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)
+[Live Demo](https://hr-platform-1054475963653.us-central1.run.app/dashboard) · [Architecture](#architecture) · [Quick Start](#quick-start)
 
 [📊 Business Showcase](https://aidenmak.vercel.app/showcase/hr-agent-business.html) · [🔧 Developer Deep-Dive](https://aidenmak.vercel.app/showcase/hr-agent-developer.html)
 
@@ -130,7 +130,7 @@ graph TB
 ## Project Structure
 
 ```
-HR_agent/
+HR-Intelligence-platform/
 ├── src/
 │   ├── agents/              # 8 specialized LangGraph agents
 │   │   ├── policy_agent.py
@@ -168,8 +168,8 @@ HR_agent/
 
 ```bash
 # Clone
-git clone https://github.com/aidenmak0624/HR_agent.git
-cd HR_agent
+git clone https://github.com/aidenmak0624/HR-Intelligence-platform.git
+cd HR-Intelligence-platform
 
 # Configure environment
 cp .env.example .env
@@ -228,7 +228,7 @@ pytest tests/e2e/
 The platform exposes an MCP server via **FastMCP** for interoperability with external AI systems:
 
 ```python
-# Connect to the HR Agent MCP server
+# Connect to the HR Intelligence Platform MCP server
 from fastmcp import Client
 
 async with Client("hr-agent-mcp") as client:
@@ -250,13 +250,13 @@ async with Client("hr-agent-mcp") as client:
 
 This project was built using an **AI-assisted "vibe coding" methodology** — leveraging Claude Code for architecture and backend, GitHub Copilot for in-editor assistance, Figma for UI design, and Antigravity for manual QA validation. Every AI-generated component was then hardened through rigorous testing (1,909 tests) and production deployment.
 
-📖 **[Read the full Vibe Coding Case Study →](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)**
+📖 **[AI-assisted development process — verified by 1,909 automated tests →](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)**
 
 ---
 
 ## Live Demo
 
-🔗 **[hr-platform-837558695367.us-central1.run.app/dashboard](https://hr-platform-837558695367.us-central1.run.app/dashboard)**
+🔗 **[hr-platform-1054475963653.us-central1.run.app/dashboard](https://hr-platform-1054475963653.us-central1.run.app/dashboard)**
 
 The platform is deployed on **Google Cloud Run** with:
 - Automatic scaling and load balancing
