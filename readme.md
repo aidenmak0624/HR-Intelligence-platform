@@ -12,7 +12,7 @@
 
 [Live Demo](https://hr-platform-1054475963653.us-central1.run.app/dashboard) · [Architecture](#architecture) · [Quick Start](#quick-start)
 
-[📊 Business Showcase](https://aidenmak.vercel.app/showcase/hr-agent-business.html) · [🔧 Developer Deep-Dive](https://aidenmak.vercel.app/showcase/hr-agent-developer.html)
+[📖 Full Case Study](https://aidenmak.com/hr-intelligence.html)
 
 </div>
 
@@ -250,7 +250,7 @@ async with Client("hr-agent-mcp") as client:
 
 This project was built using an **AI-assisted "vibe coding" methodology** — leveraging Claude Code for architecture and backend, GitHub Copilot for in-editor assistance, Figma for UI design, and Antigravity for manual QA validation. Every AI-generated component was then hardened through rigorous testing (1,909 tests) and production deployment.
 
-📖 **[AI-assisted development process — verified by 1,909 automated tests →](https://aidenmak.vercel.app/showcase/hr-agent-vibe-coding.html)**
+📖 **[AI-assisted development process — verified by 1,909 automated tests →](https://aidenmak.com/hr-intelligence.html)**
 
 ---
 
@@ -274,9 +274,9 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 <div align="center">
 
-**Built by [Aiden Mak](https://aidenmak.vercel.app)** · AI Engineer · Toronto
+**Built by [Aiden Mak](https://aidenmak.com)** · AI Engineer · Toronto
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-aidenmak.vercel.app-000000?style=flat&logo=vercel&logoColor=white)](https://aidenmak.vercel.app)
+[![Portfolio](https://img.shields.io/badge/Portfolio-aidenmak.com-000000?style=flat&logo=vercel&logoColor=white)](https://aidenmak.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-mcwaiden-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/mcwaiden)
 [![Email](https://img.shields.io/badge/Email-mcwaiden000@gmail.com-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:mcwaiden000@gmail.com)
 
