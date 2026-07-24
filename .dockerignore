@@ -60,7 +60,7 @@ Makefile
 chromadb_hr/
 chromadb/
 data/metadata/
-data/knowledge_base/
+# data/knowledge_base/ — now shipped: baked into the RAG index at build time
 # Keep data/policies/ — needed by RAG pipeline at runtime
 
 # ── Report & Document Files ────────────────────────────
