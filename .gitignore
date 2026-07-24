@@ -60,3 +60,7 @@ hr_platform.db
 claude_desktop_config.json
 CLAUDE.md
 .claude/
+
+# ─── Showcase media (raw recordings + runtime uploads) ───
+docs/showcase/media/raw/
+src/data/

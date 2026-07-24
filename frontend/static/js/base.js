@@ -408,8 +408,9 @@ async function refreshAuthToken() {
 async function apiCall(endpoint, options = {}) {
     const token = getAuthToken();
     const currentRole = localStorage.getItem('hr_current_role') || 'employee';
+    // FormData bodies must let the browser set the multipart boundary itself
     const headers = {
-        'Content-Type': 'application/json',
+        ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
         'X-User-Role': currentRole,
         ...options.headers
     };

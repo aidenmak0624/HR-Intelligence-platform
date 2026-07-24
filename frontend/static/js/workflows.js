@@ -52,6 +52,7 @@ async function approveRequest(requestId, evt) {
                 addNotificationEvent('Request Approved', `Approved request ${requestId}`);
             }
             _fadeOutCard(card, 'right');
+            loadActiveWorkflows().catch(() => {});
         } else {
             showToast('Failed to approve request', 'error');
             _enableCardButtons(card);
@@ -111,6 +112,7 @@ async function rejectRequest(requestId, evt) {
                 addNotificationEvent('Request Rejected', `Rejected request ${requestId}: ${reason || 'No reason provided'}`);
             }
             _fadeOutCard(card, 'left');
+            loadActiveWorkflows().catch(() => {});
         } else {
             showToast('Failed to reject request', 'error');
             _enableCardButtons(card);

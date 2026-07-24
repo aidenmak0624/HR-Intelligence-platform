@@ -10,8 +10,10 @@ let currentView = 'grid';
 async function loadEmployees() {
     try {
         const response = await apiCall('/api/v2/employees');
-        if (response && response.data && response.data.employees) {
-            allEmployees = response.data.employees;
+        // API returns data as a plain array; older builds nested it under data.employees
+        const employees = Array.isArray(response?.data) ? response.data : response?.data?.employees;
+        if (employees) {
+            allEmployees = employees;
             renderEmployees();
         }
     } catch (error) {
