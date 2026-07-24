@@ -13,8 +13,13 @@ Feature demo clips recorded with Playwright (`scripts/record_showcase.js`).
 | `routing` | Multi-agent routing — 3 questions, 3 agent badges (LEAVE/BENEFITS/POLICY) | Employee |
 | `pii` | PII protection — SSN/phone/email masked on screen, GDPR/CCPA refs | HR Admin |
 | `overview` | Hero overview — UI login → dashboard → chat Q&A → leave → benefits | (UI login) |
+| `rag` | RAG grounding — GDPR retention answer cites policy doc + source chips | Employee |
 
 `reasoning.png` — still of the expanded View Reasoning panel (POLICY AGENT, confidence 85%).
+`rag_citations.png` — still of the RAG-grounded answer with source chips.
+
+The `rag` clip requires an ingested index: `python scripts/build_rag_index.py` (baked into
+the Docker image at build time; locally it populates `./chromadb_hr`).
 
 Note: the `workflows` clip approves leave request id 1; to re-record it, reset first:
 `sqlite3 hr_platform.db "UPDATE leave_requests SET status='pending' WHERE id=1;"`

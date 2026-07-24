@@ -317,6 +317,16 @@ function renderAgentMessage(response, scroll = true) {
     const answerText = response.answer || response.content || '';
     let html = formatAgentResponse(answerText);
 
+    // Source citations (populated when answers are grounded via RAG retrieval)
+    if (response.sources && response.sources.length > 0) {
+        html += `<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">`;
+        html += `<span style="font-size: 11px; font-weight: 700; color: var(--text-secondary, #777); text-transform: uppercase; letter-spacing: 0.4px;">Sources</span>`;
+        response.sources.forEach(src => {
+            html += `<span style="font-size: 11px; padding: 3px 8px; background: var(--bg-light, #EEF4FF); color: var(--primary-color, #2563EB); border: 1px solid rgba(37,99,235,0.25); border-radius: 10px;">📄 ${escapeHtml(String(src))}</span>`;
+        });
+        html += `</div>`;
+    }
+
     // Add agent badge
     if (response.agent_type) {
         html += `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.1);">`;

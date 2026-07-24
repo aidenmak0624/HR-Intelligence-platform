@@ -401,15 +401,16 @@ class PolicyAgent(BaseAgent):
         # Call parent finish node
         state = super()._finish_node(state)
 
-        # Add disclaimer to final answer
+        # Add disclaimer to final answer (the system prompt already asks the
+        # LLM to include it, so only append when it's missing)
         final_answer = state.get("final_answer", "")
-        disclaimer = (
-            "\n\n---\n"
-            "Note: This is AI-generated guidance. Please consult HR for official decisions."
-        )
-
-        state["final_answer"] = final_answer + disclaimer
-        logger.info("FINISH: Added compliance disclaimer to response")
+        disclaimer_text = "This is AI-generated guidance"
+        if disclaimer_text not in final_answer:
+            state["final_answer"] = final_answer + (
+                "\n\n---\n"
+                "Note: This is AI-generated guidance. Please consult HR for official decisions."
+            )
+            logger.info("FINISH: Added compliance disclaimer to response")
 
         return state
 

@@ -309,10 +309,11 @@ class RAGPipeline:
             return []
 
         try:
+            # Similarity filtering happens post-query below; a `where` clause here
+            # would filter on document *metadata*, which has no "score" field.
             results = col.query(
                 query_texts=[query],
                 n_results=top_k,
-                where={"score": {"$gte": min_score}} if min_score > 0 else None,
             )
 
             rag_results = []
@@ -326,8 +327,10 @@ class RAGPipeline:
                     )
                     source = metadata.get("source", f"doc_{i}")
 
-                    # ChromaDB returns distances, convert to similarity
-                    similarity = 1.0 - score if score else 0.8
+                    # ChromaDB returns cosine distance in [0, 2]; normalize to
+                    # similarity in [0, 1] (1 - d would go negative and made
+                    # every real match fall below min_score)
+                    similarity = 1.0 - (score / 2.0) if score else 0.8
 
                     if similarity >= min_score:
                         rag_results.append(

@@ -54,6 +54,9 @@ class BaseAgentState(TypedDict, total=False):
 
     # --- Reflection & Control ---
     confidence_score: float
+    # next_tool must be declared here or LangGraph drops it between the
+    # decide_tool and execute_tool nodes (undeclared channels are discarded)
+    next_tool: Optional[str]
     force_next_tool: Optional[str]
     iterations: int
     max_iterations: int
@@ -397,7 +400,7 @@ Return ONLY JSON:
 QUERY: {query}
 TOOLS USED: {list(tool_results.keys())}
 CURRENT INFORMATION:
-{json.dumps(tool_results, indent=2)[:500]}
+{json.dumps(tool_results, indent=2)[:3000]}
 
 Return ONLY JSON:
 {{

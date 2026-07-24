@@ -48,7 +48,14 @@ COPY config/ ./config/
 COPY migrations/ ./migrations/
 COPY scripts/ ./scripts/
 COPY data/policies/ ./data/policies/
+COPY data/knowledge_base/ ./data/knowledge_base/
 COPY run.py alembic.ini requirements.txt ./
+
+# Bake the RAG index at build time: downloads the embedding model into the
+# HF cache and ingests policy docs into ./chromadb_hr, so containers start
+# with a warm index instead of downloading + ingesting at cold start.
+ENV HF_HOME=/app/.hf_cache
+RUN python scripts/build_rag_index.py
 
 # Create runtime directories
 RUN mkdir -p logs data/chroma_db data/documents \

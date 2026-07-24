@@ -329,6 +329,27 @@ Object.assign(FLOWS, {
     },
   },
 
+  // 8b. RAG grounding — question misses the static KB, answer arrives with
+  // retrieved policy sources rendered as citation chips
+  rag: {
+    role: 'employee',
+    run: async (page) => {
+      await page.goto(`${BASE_URL}/chat`);
+      await page.waitForLoadState('domcontentloaded');
+      await sleep(2000);
+      await askAndWait(
+        page,
+        'After I resign, how long does the company keep my personnel file before deleting it?',
+        { settle: 4500 }
+      );
+      await page.screenshot({
+        path: path.join(OUT_DIR, '..', 'rag_citations.png'),
+        fullPage: false,
+      });
+      await sleep(1000);
+    },
+  },
+
   // 9. Hero overview — real login → dashboard → ask the AI → leave → benefits
   overview: {
     role: null,
