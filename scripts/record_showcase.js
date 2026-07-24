@@ -329,6 +329,45 @@ Object.assign(FLOWS, {
     },
   },
 
+  // 5b. Benefits — browse plans, enroll, enrollment list updates
+  benefits: {
+    role: 'employee',
+    run: async (page) => {
+      await page.goto(`${BASE_URL}/benefits`);
+      await page.waitForLoadState('domcontentloaded');
+      await sleep(3000); // enrollments + plan cards render
+      await page.mouse.wheel(0, 350);
+      await sleep(1500); // available plans
+      const enrollBtn = page
+        .locator('[data-action="enroll-plan"]:not([disabled])')
+        .last();
+      await enrollBtn.waitFor({ state: 'visible', timeout: 10000 });
+      const box = await enrollBtn.boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 20 });
+      await sleep(400);
+      await enrollBtn.click();
+      await sleep(2500); // success toast + enrollment appears
+      await page.mouse.wheel(0, -400);
+      await sleep(2500); // updated Current Enrollments
+    },
+  },
+
+  // 6b. Rejection flow — manager rejects with a reason
+  reject: {
+    role: 'manager',
+    run: async (page) => {
+      await page.goto(`${BASE_URL}/workflows`);
+      await page.waitForLoadState('domcontentloaded');
+      await sleep(3000);
+      await moveAndClick(page, '.approval-card .btn-reject');
+      await sleep(1200);
+      await typeSlow(page, '#reject-reason-input', 'Overlaps with the Q3 release freeze — please pick dates after Sept 15.', 30);
+      await sleep(600);
+      await moveAndClick(page, '#reject-modal-confirm');
+      await sleep(3500); // card resolves, timeline shows Rejected
+    },
+  },
+
   // 8b. RAG grounding — question misses the static KB, answer arrives with
   // retrieved policy sources rendered as citation chips
   rag: {

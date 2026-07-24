@@ -1,0 +1,81 @@
+      <svg viewBox="0 0 1100 490" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <rect width="100%" height="100%" fill="#0f172a" rx="14"/>
+        <!-- Layer 1: Clients -->
+        <rect x="50" y="20" width="1000" height="65" rx="12" fill="#1e1b4b" stroke="#4338ca" stroke-width="1.5"/>
+        <text x="80" y="47" font-size="9" font-weight="700" fill="#a5b4fc" letter-spacing="1.5">CLIENTS</text>
+        <rect x="180" y="35" width="120" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="240" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">Web Dashboard</text>
+        <rect x="315" y="35" width="100" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="365" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">Slack Bot</text>
+        <rect x="430" y="35" width="100" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="480" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">Teams Bot</text>
+        <rect x="545" y="35" width="110" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="600" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">MCP Client</text>
+        <rect x="670" y="35" width="100" height="34" rx="7" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <text x="720" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#e2e8f0">REST API</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="85" x2="550" y2="105" stroke="#4338ca" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 2: Middleware -->
+        <rect x="50" y="108" width="1000" height="65" rx="12" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="80" y="135" font-size="9" font-weight="700" fill="#fb923c" letter-spacing="1.5">MIDDLEWARE</text>
+        <rect x="200" y="123" width="100" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="250" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">JWT Auth</text>
+        <rect x="315" y="123" width="110" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="370" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Rate Limiter</text>
+        <rect x="440" y="123" width="110" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="495" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">PII Stripper</text>
+        <rect x="565" y="123" width="100" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="615" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Sanitizer</text>
+        <rect x="680" y="123" width="130" height="34" rx="7" fill="rgba(249,115,22,.08)" stroke="rgba(249,115,22,.3)" stroke-width="1"/>
+        <text x="745" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Security Headers</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="173" x2="550" y2="193" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 3: AI Core -->
+        <rect x="50" y="196" width="1000" height="95" rx="12" fill="#022c22" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="80" y="223" font-size="9" font-weight="700" fill="#4ade80" letter-spacing="1.5">AI CORE</text>
+        <rect x="170" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="230" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">Router Agent</text>
+        <text x="230" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">intent + dispatch</text>
+        <rect x="305" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="365" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">7 Specialists</text>
+        <text x="365" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">LangGraph agents</text>
+        <rect x="440" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="500" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">RAG Pipeline</text>
+        <text x="500" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">ChromaDB vectors</text>
+        <rect x="575" y="218" width="120" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="635" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">LLM Gateway</text>
+        <text x="635" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">GPT-4 + Gemini</text>
+        <rect x="710" y="218" width="110" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="765" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">Guardrails</text>
+        <text x="765" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">in/out validation</text>
+        <rect x="835" y="218" width="110" height="55" rx="7" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.3)" stroke-width="1"/>
+        <text x="890" y="241" text-anchor="middle" font-size="10" font-weight="700" fill="#e2e8f0">Workflows</text>
+        <text x="890" y="257" text-anchor="middle" font-size="8" fill="#94a3b8">approval engine</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="291" x2="550" y2="311" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 4: Data -->
+        <rect x="50" y="314" width="1000" height="65" rx="12" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="80" y="341" font-size="9" font-weight="700" fill="#60a5fa" letter-spacing="1.5">DATA</text>
+        <rect x="185" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="240" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">PostgreSQL</text>
+        <rect x="310" y="329" width="85" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="353" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Redis</text>
+        <rect x="410" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="465" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">ChromaDB</text>
+        <rect x="535" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="590" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">BambooHR</text>
+        <rect x="660" y="329" width="100" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="710" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Workday</text>
+        <rect x="775" y="329" width="110" height="34" rx="7" fill="rgba(59,130,246,.08)" stroke="rgba(59,130,246,.3)" stroke-width="1"/>
+        <text x="830" y="351" text-anchor="middle" font-size="10" font-weight="600" fill="#e2e8f0">Payroll API</text>
+        <!-- Dashed connector -->
+        <line x1="550" y1="379" x2="550" y2="399" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Layer 5: Ops -->
+        <rect x="50" y="402" width="1000" height="65" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+        <text x="80" y="429" font-size="9" font-weight="700" fill="#94a3b8" letter-spacing="1.5">OPS</text>
+        <text x="210" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">Docker</text>
+        <text x="350" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">Cloud Run</text>
+        <text x="500" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">GitHub Actions CI</text>
+        <text x="670" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">LangSmith Tracing</text>
+        <text x="850" y="440" text-anchor="middle" font-size="10" fill="#94a3b8">121 Playwright Tests</text>
+      </svg>

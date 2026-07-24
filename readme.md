@@ -31,7 +31,7 @@ Built as an enterprise-grade system with **MCP integration**, **RAG-powered know
 | Metric | Value |
 |--------|-------|
 | 🤖 Specialized Agents | **8** (policy, leave, benefits, compliance, analytics, onboarding, payroll, recruitment) |
-| 🔧 MCP Tools | **28** tools, **8** resources, **5** prompts via FastMCP |
+| 🔧 MCP Tools | **37** tools, **8** resources, **5** prompts via FastMCP (standalone) · **21**-tool MCP endpoint embedded in the web app |
 | 🧪 Test Coverage | **1,909** tests (Pytest unit/integration + Playwright E2E) |
 | 📦 Python Modules | **101** across the platform |
 | ☁️ Deployment | **GCP Cloud Run** with CI/CD pipeline |
@@ -54,13 +54,25 @@ history as <i>Pending</i> while your manager is notified.
 </details>
 
 <details>
-<summary><b>✅ Approval Workflows</b> — managers act in one place, every decision logged</summary>
+<summary><b>✅ Approval Workflows</b> — approve or reject with a reason, every decision logged</summary>
 <br>
 
 ![Approval workflow demo](docs/showcase/media/workflows.gif)
 
-Every pending request lands in a single queue with approve/reject actions; the workflow
-timeline updates the moment a decision is made.
+Every pending request lands in a single queue; the workflow timeline updates the moment
+a decision is made. Rejections carry a written reason back to the employee:
+
+![Rejection flow demo](docs/showcase/media/reject.gif)
+</details>
+
+<details>
+<summary><b>💊 Benefits Enrollment</b> — browse plans, enroll online, coverage updates instantly</summary>
+<br>
+
+![Benefits enrollment demo](docs/showcase/media/benefits.gif)
+
+Medical, dental, vision and retirement plans with premiums side by side — one click to
+enroll, and Current Enrollments reflects it immediately.
 </details>
 
 <details>
@@ -212,7 +224,7 @@ graph TB
 1. **Request enters** → Flask API with JWT auth, rate limiting, and automatic PII detection/masking
 2. **Intelligent routing** → LangGraph orchestrator analyzes intent and delegates to the right specialized agent
 3. **Agent executes** → Each agent has its own tools, knowledge access (via RAG), and decision logic
-4. **MCP integration** → 28 tools exposed via FastMCP for external system interoperability (BambooHR, etc.)
+4. **MCP integration** → 37 tools exposed via FastMCP for external system interoperability (BambooHR, etc.)
 5. **Response returned** → With full observability traced through LangSmith, Prometheus, and Grafana
 
 ---
@@ -223,7 +235,7 @@ graph TB
 |-------|-------------|
 | **AI/ML** | LangGraph 0.2, OpenAI GPT-4, Gemini (fallback), ChromaDB, Sentence Transformers |
 | **Backend** | Python 3.10+, Flask 3.0, SQLAlchemy 2.0, Celery |
-| **MCP** | FastMCP — 28 tools, 8 resources, 5 prompts |
+| **MCP** | FastMCP — 37 tools, 8 resources (4 static + 4 templated), 5 prompts · embedded web-app endpoint: 21 tools |
 | **Data** | PostgreSQL 15+, Redis 7+, ChromaDB |
 | **Frontend** | HTML/CSS/JS, Jinja2, Chart.js |
 | **Infrastructure** | Docker, GCP Cloud Run, Nginx, CI/CD |
@@ -339,7 +351,7 @@ from fastmcp import Client
 
 async with Client("hr-agent-mcp") as client:
     # List available tools
-    tools = await client.list_tools()  # 28 tools
+    tools = await client.list_tools()  # 37 tools
 
     # Execute a tool
     result = await client.call_tool(
@@ -348,7 +360,7 @@ async with Client("hr-agent-mcp") as client:
     )
 ```
 
-**28 tools** across HR domains: leave management, benefits enrollment, policy queries, compliance checks, analytics reporting, and more.
+**37 tools** across HR domains: leave management, benefits enrollment, policy queries, compliance checks, analytics reporting, and more.
 
 ---
 
@@ -363,6 +375,18 @@ This project was built using an **AI-assisted "vibe coding" methodology** — le
 ## Live Demo
 
 🔗 **[hr-platform-1054475963653.us-central1.run.app/dashboard](https://hr-platform-1054475963653.us-central1.run.app/dashboard)**
+
+Sign in with any demo account (all use password `demo123`) — each role sees a different platform:
+
+| Role | Email | What you'll see |
+|------|-------|-----------------|
+| 👤 Employee | `john.smith@company.com` | Self-service: chat, leave, benefits, documents |
+| 👔 Manager | `sarah.chen@company.com` | + approval workflows and team visibility |
+| 🛡️ HR Admin | `emily.rodriguez@company.com` | + directory, analytics, full oversight |
+
+> ⏱️ Note: after a cold start the first ~60 seconds serve fast static answers while the
+> AI services initialize — give the RAG/agent features a minute to warm up.
+> Demo data is synthetic (fictional company "TechNova"); no real employee data is used.
 
 The platform is deployed on **Google Cloud Run** with:
 - Automatic scaling and load balancing

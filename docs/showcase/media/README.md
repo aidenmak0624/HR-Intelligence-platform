@@ -14,6 +14,8 @@ Feature demo clips recorded with Playwright (`scripts/record_showcase.js`).
 | `pii` | PII protection — SSN/phone/email masked on screen, GDPR/CCPA refs | HR Admin |
 | `overview` | Hero overview — UI login → dashboard → chat Q&A → leave → benefits | (UI login) |
 | `rag` | RAG grounding — GDPR retention answer cites policy doc + source chips | Employee |
+| `benefits` | Benefits enrollment — browse plans → one-click enroll → coverage updates | Employee |
+| `reject` | Rejection flow — reject with written reason → timeline shows Rejected | Manager |
 
 `reasoning.png` — still of the expanded View Reasoning panel (POLICY AGENT, confidence 85%).
 `rag_citations.png` — still of the RAG-grounded answer with source chips.

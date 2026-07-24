@@ -1,0 +1,67 @@
+      <svg viewBox="0 0 1100 260" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','Fira Code',Consolas,monospace">
+        <rect width="100%" height="100%" fill="#0f172a" rx="14"/>
+        <defs>
+          <marker id="da-ci" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+        </defs>
+        <!-- Stage 1: Git Push -->
+        <rect x="15" y="40" width="170" height="160" rx="14" fill="#1e1b4b" stroke="#4338ca" stroke-width="1.5"/>
+        <text x="100" y="80" text-anchor="middle" font-size="28">📤</text>
+        <text x="100" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">git push</text>
+        <text x="100" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Push to main</text>
+        <text x="100" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">triggers workflow</text>
+        <rect x="45" y="158" width="110" height="22" rx="6" fill="rgba(99,102,241,.2)" stroke="rgba(99,102,241,.4)" stroke-width="1"/>
+        <text x="100" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#a5b4fc">TRIGGER</text>
+        <line x1="190" y1="120" x2="218" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 2: Lint -->
+        <rect x="225" y="40" width="170" height="160" rx="14" fill="#172554" stroke="#0891b2" stroke-width="1.5"/>
+        <text x="310" y="80" text-anchor="middle" font-size="28">🔍</text>
+        <text x="310" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Lint &amp; Format</text>
+        <text x="310" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Black 26.1.0</text>
+        <text x="310" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">Flake8 + MyPy</text>
+        <rect x="255" y="158" width="110" height="22" rx="6" fill="rgba(8,145,178,.15)" stroke="rgba(8,145,178,.4)" stroke-width="1"/>
+        <text x="310" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#22d3ee">QUALITY</text>
+        <line x1="400" y1="120" x2="428" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 3: Test -->
+        <rect x="435" y="40" width="170" height="160" rx="14" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="520" y="80" text-anchor="middle" font-size="28">🧪</text>
+        <text x="520" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">pytest Suite</text>
+        <text x="520" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">2,079 tests</text>
+        <text x="520" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">40% coverage min</text>
+        <rect x="465" y="158" width="110" height="22" rx="6" fill="rgba(124,58,237,.15)" stroke="rgba(124,58,237,.4)" stroke-width="1"/>
+        <text x="520" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#a78bfa">VERIFY</text>
+        <line x1="610" y1="120" x2="638" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 4: Docker Build -->
+        <rect x="645" y="40" width="170" height="160" rx="14" fill="#022c22" stroke="#059669" stroke-width="1.5"/>
+        <text x="730" y="80" text-anchor="middle" font-size="28">🐳</text>
+        <text x="730" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Docker Build</text>
+        <text x="730" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Layer caching</text>
+        <text x="730" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">Push to GHCR</text>
+        <rect x="675" y="158" width="110" height="22" rx="6" fill="rgba(5,150,105,.15)" stroke="rgba(5,150,105,.4)" stroke-width="1"/>
+        <text x="730" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#4ade80">PACKAGE</text>
+        <line x1="820" y1="120" x2="848" y2="120" stroke="#818cf8" stroke-width="2" marker-end="url(#da-ci)"/>
+
+        <!-- Stage 5: Deploy -->
+        <rect x="855" y="40" width="220" height="160" rx="14" fill="#1c1917" stroke="#d97706" stroke-width="1.5"/>
+        <text x="965" y="80" text-anchor="middle" font-size="28">🚀</text>
+        <text x="965" y="108" text-anchor="middle" font-weight="700" font-size="12" fill="#e2e8f0">Cloud Run Deploy</text>
+        <text x="965" y="128" text-anchor="middle" font-size="9" fill="#94a3b8">Google Cloud Run</text>
+        <text x="965" y="143" text-anchor="middle" font-size="9" fill="#94a3b8">Auto-scaling serverless</text>
+        <rect x="910" y="158" width="110" height="22" rx="6" fill="rgba(217,119,6,.15)" stroke="rgba(217,119,6,.4)" stroke-width="1"/>
+        <text x="965" y="173" text-anchor="middle" font-size="8" font-weight="700" fill="#fb923c">DEPLOY</text>
+
+        <!-- Bottom timeline bar -->
+        <rect x="15" y="220" width="1060" height="24" rx="6" fill="rgba(255,255,255,.03)" stroke="var(--bdr)" stroke-width="1"/>
+        <rect x="15" y="220" width="180" height="24" rx="6" fill="rgba(99,102,241,.1)"/>
+        <rect x="225" y="220" width="180" height="24" rx="6" fill="rgba(8,145,178,.1)"/>
+        <rect x="435" y="220" width="180" height="24" rx="6" fill="rgba(124,58,237,.1)"/>
+        <rect x="645" y="220" width="180" height="24" rx="6" fill="rgba(5,150,105,.1)"/>
+        <rect x="855" y="220" width="220" height="24" rx="6" fill="rgba(217,119,6,.1)"/>
+        <text x="105" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~0s</text>
+        <text x="315" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~30s</text>
+        <text x="525" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~3min</text>
+        <text x="735" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~5min</text>
+        <text x="965" y="236" text-anchor="middle" font-size="8" fill="#94a3b8">~7min</text>
+      </svg>
