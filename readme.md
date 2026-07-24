@@ -14,6 +14,8 @@
 
 [📖 Full Case Study](https://aidenmak.com/hr-intelligence.html)
 
+![Platform overview — login, ask the AI, self-serve leave and benefits](docs/showcase/media/overview.gif)
+
 </div>
 
 ---
@@ -33,6 +35,110 @@ Built as an enterprise-grade system with **MCP integration**, **RAG-powered know
 | 🧪 Test Coverage | **1,909** tests (Pytest unit/integration + Playwright E2E) |
 | 📦 Python Modules | **101** across the platform |
 | ☁️ Deployment | **GCP Cloud Run** with CI/CD pipeline |
+
+---
+
+## Feature Showcase
+
+### Core HR operations — what an HR team actually buys
+
+<details>
+<summary><b>🗓️ Leave Management</b> — calendar request → confirm → approval flow, end-to-end</summary>
+<br>
+
+![Leave management demo](docs/showcase/media/leave.gif)
+
+Balance cards answer "how many days do I have left?" on page load. Pick a range on the
+calendar, confirm a summary of exactly what you're requesting, and watch it appear in
+history as <i>Pending</i> while your manager is notified.
+</details>
+
+<details>
+<summary><b>✅ Approval Workflows</b> — managers act in one place, every decision logged</summary>
+<br>
+
+![Approval workflow demo](docs/showcase/media/workflows.gif)
+
+Every pending request lands in a single queue with approve/reject actions; the workflow
+timeline updates the moment a decision is made.
+</details>
+
+<details>
+<summary><b>👥 Employee Directory</b> — live search, Grid / List / Org Chart views</summary>
+<br>
+
+![Employee directory demo](docs/showcase/media/directory.gif)
+
+Reads from the same live database everything else runs on — never out of date by
+construction. Search filters as you type across name, department, role and email.
+</details>
+
+<details>
+<summary><b>📁 Document Center</b> — drag-drop upload + template-based generation</summary>
+<br>
+
+![Document center demo](docs/showcase/media/documents.gif)
+
+Upload with progress and validation, or generate employment certificates, offer letters
+and salary slips from templates filled with the employee's actual record.
+</details>
+
+<details>
+<summary><b>📊 Analytics & Reporting</b> — workforce metrics, one-click CSV/PDF export</summary>
+<br>
+
+![Analytics dashboard demo](docs/showcase/media/analytics.gif)
+
+Headcount, leave usage, query volume and agent activity — filterable by department and
+date range, exportable for the boardroom.
+</details>
+
+### The AI layer — what makes it feel effortless
+
+<details open>
+<summary><b>💬 Conversational self-service</b> — ask in plain language, get a grounded answer</summary>
+<br>
+
+![HR chat demo — routed to the Leave agent, confidence 90%](docs/showcase/media/chat.gif)
+
+Note the <b>LEAVE AGENT</b> badge, the confidence score and the <i>View Reasoning</i>
+button — because behind the chat box, this is not one chatbot.
+</details>
+
+<details>
+<summary><b>🧭 Multi-Agent Orchestration</b> — three questions, three different specialists</summary>
+<br>
+
+![Multi-agent routing demo](docs/showcase/media/routing.gif)
+
+A router classifies each question and dispatches to one of 8 domain agents — watch the
+badge change from LEAVE to BENEFITS to POLICY across one conversation.
+</details>
+
+<details>
+<summary><b>📚 RAG Policy Q&A</b> — answers cite your policy documents, with source chips</summary>
+<br>
+
+![RAG grounding demo — answer cites GDPR policy Section 10](docs/showcase/media/rag.gif)
+
+Asked how long personnel files are kept after resignation, the platform answers with the
+company's actual 7-year retention rule, cites <i>gdpr_policy.txt Section 10</i> inline,
+and renders every retrieved document as a source chip.
+</details>
+
+<details>
+<summary><b>🛡️ PII Protection</b> — sensitive data masked on screen, GDPR/CCPA aware</summary>
+<br>
+
+![PII protection demo](docs/showcase/media/pii.gif)
+
+A message containing an SSN, phone number and personal email comes back masked —
+<code>[SSN REDACTED]</code>, <code>[PHONE NUMBER REDACTED]</code> — with the relevant
+GDPR and CCPA articles cited.
+</details>
+
+> 🎬 All clips are recorded with a scripted Playwright recorder (`scripts/record_showcase.js`)
+> against the live app — regeneration steps in [`docs/showcase/media/README.md`](docs/showcase/media/README.md).
 
 ---
 
