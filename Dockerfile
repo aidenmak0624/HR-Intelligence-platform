@@ -55,7 +55,12 @@ COPY run.py alembic.ini requirements.txt ./
 # Bake the RAG index at build time: downloads the embedding model into the
 # HF cache and ingests policy docs into ./chromadb_hr, so containers start
 # with a warm index instead of downloading + ingesting at cold start.
-ENV HF_HOME=/app/.hf_cache
+# HOME must point at /app BEFORE the bake: ChromaDB's default ONNX embedding
+# function caches under $HOME/.cache/chroma, and the runtime user's home is
+# /app — without this the model bakes into /root and every cold container
+# re-downloads ~80MB on its first query.
+ENV HF_HOME=/app/.hf_cache \
+    HOME=/app
 RUN python scripts/build_rag_index.py
 
 # Create runtime directories
