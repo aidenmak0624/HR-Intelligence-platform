@@ -110,7 +110,10 @@ def init_services():
 
     Runs entirely in a background daemon thread so the Flask server
     starts immediately and can answer health checks while services
-    come up.  No join/timeout — services init at their own pace.
+    come up.  `app.services_ready` is set once the init attempt finishes
+    (success or failure) so request paths can wait for readiness instead
+    of silently degrading — on a cold Cloud Run container the first
+    ~60s of traffic would otherwise see `agent_service is None`.
     """
     import threading
 
@@ -142,7 +145,26 @@ def init_services():
             logger.error(f"❌ RAG service init failed: {e}")
             app.rag_service = None
 
+        app.services_ready.set()
         logger.info("✅ All background service initialization completed")
+
+    def _maybe_reinit_services():
+        """Relaunch the init worker after a failed attempt (rate-limited).
+
+        Called from request paths when `agent_service` is still None after
+        the first init attempt finished; without this a crashed init pins
+        the container in degraded mode for its whole lifetime.
+        """
+        with app._services_init_lock:
+            if app.agent_service is not None or not app.services_ready.is_set():
+                return
+            now = time.monotonic()
+            if now - app._services_init_last_attempt < 120:
+                return
+            app._services_init_last_attempt = now
+            app.services_ready.clear()
+        logger.warning("Retrying background service initialization...")
+        threading.Thread(target=_init_worker, daemon=True).start()
 
     logger.info("Launching service init in background (non-blocking)...")
 
@@ -150,6 +172,10 @@ def init_services():
     app.agent_service = None
     app.llm_service = None
     app.rag_service = None
+    app.services_ready = threading.Event()
+    app._services_init_lock = threading.Lock()
+    app._services_init_last_attempt = time.monotonic()
+    app.maybe_reinit_services = _maybe_reinit_services
 
     init_thread = threading.Thread(target=_init_worker, daemon=True)
     init_thread.start()
@@ -859,6 +885,15 @@ def health():
     # Redis and LLM are optional — don't block health on them
     status = "healthy" if db_ok else "degraded"
 
+    def _bg_service_state(attr: str) -> str:
+        """Readiness of a background-initialized service (see init_services)."""
+        if getattr(app, attr, None) is not None:
+            return "ok"
+        ready = getattr(app, "services_ready", None)
+        if ready is not None and not ready.is_set():
+            return "initializing"
+        return "unavailable"
+
     return (
         jsonify(
             {
@@ -868,6 +903,8 @@ def health():
                     "database": "ok" if db_ok else "failed",
                     "redis": "skipped",
                     "llm": "skipped",
+                    "agents": _bg_service_state("agent_service"),
+                    "rag": _bg_service_state("rag_service"),
                 },
             }
         ),

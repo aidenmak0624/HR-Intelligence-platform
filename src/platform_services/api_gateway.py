@@ -6,6 +6,7 @@ request validation, authentication, and comprehensive error handling.
 
 import logging
 import json
+import os
 import re
 import time
 import uuid
@@ -19,6 +20,46 @@ from flask import Blueprint, request, jsonify, g, current_app
 from functools import wraps
 
 logger = logging.getLogger(__name__)
+
+# How long /api/v2/query may block waiting for background service init to
+# finish on a cold container (init takes ~60s on Cloud Run; gunicorn runs
+# threaded so waiting here does not stall other endpoints).
+AGENT_INIT_WAIT_SECONDS = float(os.getenv("AGENT_INIT_WAIT_SECONDS", "75"))
+
+
+def await_agent_service(flask_app, timeout_seconds=None):
+    """Return the app's agent service, waiting out background init if needed.
+
+    Cold containers serve traffic before the background init thread
+    (src.app_v2.init_services) finishes, so ``agent_service`` may
+    legitimately be None for the first ~60s of a container's life.
+    Waiting turns "silent generic fallback" into "slower but correct
+    answer".  Returns None only when init finished without producing a
+    service — after scheduling a rate-limited re-init for later requests.
+    """
+    if timeout_seconds is None:
+        timeout_seconds = AGENT_INIT_WAIT_SECONDS
+
+    service = getattr(flask_app, "agent_service", None)
+    if service is not None:
+        return service
+
+    ready = getattr(flask_app, "services_ready", None)
+    if ready is None:
+        # App was not built via app_v2.create_app (e.g. a bare test app)
+        return None
+
+    if ready.is_set():
+        # Previous init attempt finished but failed — schedule a guarded retry
+        reinit = getattr(flask_app, "maybe_reinit_services", None)
+        if reinit is not None:
+            reinit()
+
+    if not ready.is_set():
+        logger.info(f"Agent service still initializing — waiting up to {timeout_seconds:.0f}s")
+        ready.wait(timeout=timeout_seconds)
+
+    return getattr(flask_app, "agent_service", None)
 
 
 class APIVersion(str, Enum):
@@ -799,7 +840,7 @@ class APIGateway:
 
             # --- 2. Agent service (only if static fallback didn't match) ---
             if result is None:
-                agent_service = current_app.agent_service
+                agent_service = await_agent_service(current_app)
                 if agent_service is not None:
                     try:
                         result = agent_service.process_query(
@@ -810,6 +851,10 @@ class APIGateway:
                     except Exception as svc_err:
                         logger.warning(f"Agent service error, using generic fallback: {svc_err}")
                         result = None
+                else:
+                    logger.error(
+                        "Agent service unavailable after init wait — serving generic fallback"
+                    )
 
             # --- 3. Ultimate fallback (nothing matched) ---
             if result is None:

@@ -29,6 +29,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=5050 \
     WORKERS=1 \
+    THREADS=8 \
     TIMEOUT=300
 
 # Runtime deps only (no gcc)
@@ -75,9 +76,13 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
 # NOTE: --preload removed so Gunicorn binds the port immediately
 # (Cloud Run needs the port open fast to pass its startup probe).
 # Workers initialize independently after fork.
+# --threads switches to the gthread worker so a query waiting on
+# background service init (await_agent_service) can't stall the rest
+# of the site behind a single sync worker.
 CMD gunicorn \
     --bind 0.0.0.0:${PORT} \
     --workers ${WORKERS} \
+    --threads ${THREADS} \
     --timeout ${TIMEOUT} \
     --access-logfile - \
     --error-logfile - \
