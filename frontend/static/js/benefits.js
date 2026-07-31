@@ -119,6 +119,8 @@ let integrationRetryTimer = null;
 
 function scheduleIntegrationRetry(attempt) {
     if (attempt >= INTEGRATION_RETRY_DELAYS_MS.length) return;
+    // Collapse concurrent chains (e.g. manual refresh during a retry window)
+    if (integrationRetryTimer) clearTimeout(integrationRetryTimer);
     integrationRetryTimer = setTimeout(() => {
         integrationRetryTimer = null;
         loadIntegrationStatus(attempt + 1);
@@ -163,7 +165,11 @@ async function loadIntegrationStatus(attempt = 0) {
     renderIntegrationStatus();
 
     const mcpStatus = String((benefitsState.integration.mcp || {}).status || '').toLowerCase();
-    if (mcpStatus !== 'ok') {
+    const hris = benefitsState.integration.hris || {};
+    // Retry on MCP failure or genuine HRIS unhealth. NOT on using_fallback:
+    // the hosted demo permanently runs the local-DB fallback (no BambooHR
+    // creds) and that steady state should not burn retries on every load.
+    if (mcpStatus !== 'ok' || hris.healthy === false) {
         scheduleIntegrationRetry(attempt);
     }
 }
