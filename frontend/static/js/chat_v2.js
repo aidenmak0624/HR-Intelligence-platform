@@ -373,7 +373,16 @@ function renderAgentBadge(agentType) {
         'leave_agent': '#9B59B6',
         'onboarding_agent': '#E67E22',
         'policy_agent': '#3498DB',
-        'employee_info_agent': '#E74C3C'
+        'employee_info_agent': '#E74C3C',
+        // Live specialist agents report short type names (BaseAgent.get_agent_type)
+        'policy': '#3498DB',
+        'compliance': '#16A085',
+        'leave': '#9B59B6',
+        'leave_request': '#9B59B6',
+        'benefits_compensation': '#27AE60',
+        'employee_info': '#E74C3C',
+        'onboarding': '#E67E22',
+        'performance': '#2E86AB'
     };
 
     const color = colors[agentType] || '#7F8C8D';
