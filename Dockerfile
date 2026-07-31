@@ -61,10 +61,11 @@ COPY run.py alembic.ini requirements.txt ./
 # re-downloads ~80MB on its first query.
 ENV HF_HOME=/app/.hf_cache \
     HOME=/app
-RUN python scripts/build_rag_index.py
-
-# Create runtime directories
-RUN mkdir -p logs data/chroma_db data/documents \
+# Single layer: bake, drop the downloaded ONNX archive, create runtime dirs
+# and chown — a separate chown layer would duplicate the whole cache tree
+RUN python scripts/build_rag_index.py \
+    && find /app/.cache -name "*.tar.gz" -delete 2>/dev/null || true \
+    && mkdir -p logs data/chroma_db data/documents \
     && chown -R appuser:appuser /app
 
 # Switch to non-root user
