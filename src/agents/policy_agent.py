@@ -123,8 +123,11 @@ class PolicyAgent(BaseAgent):
 
                 enriched_query = query + employee_context
 
-                # Use "policies" collection by default
-                collection_name = collection or "policies"
+                # Use the ingested policy collection by default (see
+                # scripts/build_rag_index.py — collections are hr_policies /
+                # employee_handbook; "policies" does not exist and only worked
+                # via RAGPipeline's not-found fallback to its default)
+                collection_name = collection or "hr_policies"
 
                 # Search RAG pipeline
                 results = self.rag_pipeline.search(

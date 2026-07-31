@@ -76,7 +76,17 @@ class RouterAgent:
     # Intent categories with examples
     INTENT_CATEGORIES = {
         "employee_info": ["who is", "employee profile", "contact", "department", "report to"],
-        "policy": ["policy", "procedure", "compliance", "guideline", "rule"],
+        "policy": [
+            "policy",
+            "procedure",
+            "compliance",
+            "guideline",
+            "rule",
+            "retention",
+            "personnel file",
+            "personnel record",
+            "how long do you keep",
+        ],
         "leave": [
             "leave balance",
             "time off balance",
@@ -501,15 +511,20 @@ Return JSON:
             }
 
         # Step 4: Dispatch and execute
+        # Keep the specialist's own agent_type (e.g. "policy_agent") so the
+        # UI badge names the agent that actually answered; "router" only when
+        # dispatch produced no specialist attribution.
         if intent == "multi_intent":
             results = self.handle_multi_intent(intents, query, user_context)
             merged = self.merge_responses(results)
-            merged["agent_type"] = "router"
+            if not merged.get("agent_type") or merged["agent_type"] == "none":
+                merged["agent_type"] = "router"
             merged["intents"] = intents
             return merged
         else:
             result = self.dispatch_to_agent(intent, query, user_context)
-            result["agent_type"] = "router"
+            if not result.get("agent_type") or result["agent_type"] == "none":
+                result["agent_type"] = "router"
             result["intents"] = intents
             return result
 
