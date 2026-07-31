@@ -29,6 +29,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=5050 \
     WORKERS=1 \
+    THREADS=8 \
     TIMEOUT=300
 
 # Runtime deps only (no gcc)
@@ -54,11 +55,17 @@ COPY run.py alembic.ini requirements.txt ./
 # Bake the RAG index at build time: downloads the embedding model into the
 # HF cache and ingests policy docs into ./chromadb_hr, so containers start
 # with a warm index instead of downloading + ingesting at cold start.
-ENV HF_HOME=/app/.hf_cache
-RUN python scripts/build_rag_index.py
-
-# Create runtime directories
-RUN mkdir -p logs data/chroma_db data/documents \
+# HOME must point at /app BEFORE the bake: ChromaDB's default ONNX embedding
+# function caches under $HOME/.cache/chroma, and the runtime user's home is
+# /app — without this the model bakes into /root and every cold container
+# re-downloads ~80MB on its first query.
+ENV HF_HOME=/app/.hf_cache \
+    HOME=/app
+# Single layer: bake, drop the downloaded ONNX archive, create runtime dirs
+# and chown — a separate chown layer would duplicate the whole cache tree
+RUN python scripts/build_rag_index.py \
+    && find /app/.cache -name "*.tar.gz" -delete 2>/dev/null || true \
+    && mkdir -p logs data/chroma_db data/documents \
     && chown -R appuser:appuser /app
 
 # Switch to non-root user
@@ -75,9 +82,13 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
 # NOTE: --preload removed so Gunicorn binds the port immediately
 # (Cloud Run needs the port open fast to pass its startup probe).
 # Workers initialize independently after fork.
+# --threads switches to the gthread worker so a query waiting on
+# background service init (await_agent_service) can't stall the rest
+# of the site behind a single sync worker.
 CMD gunicorn \
     --bind 0.0.0.0:${PORT} \
     --workers ${WORKERS} \
+    --threads ${THREADS} \
     --timeout ${TIMEOUT} \
     --access-logfile - \
     --error-logfile - \

@@ -1,7 +1,7 @@
 """Tests for Router Agent module."""
 
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from src.agents.router_agent import RouterAgent
 
 
@@ -71,6 +71,41 @@ class TestIntentClassification:
 
         # Should classify to one primary intent
         assert intent in router.INTENT_CATEGORIES
+
+    def test_classify_intent_personnel_file_retention(self):
+        """Data-retention phrasing routes to policy without needing the LLM."""
+        mock_llm = MagicMock()
+        router = RouterAgent(mock_llm)
+
+        intent, confidence = router.classify_intent("How long do you keep my personnel file?")
+
+        assert intent == "policy"
+        assert confidence >= 0.5
+        mock_llm.invoke.assert_not_called()
+
+    def test_classify_intent_retention_policy_query(self):
+        """Retention-related wording matches the policy keyword table."""
+        mock_llm = MagicMock()
+        router = RouterAgent(mock_llm)
+
+        intent, confidence = router.classify_intent(
+            "What is the retention period for personnel records?"
+        )
+
+        assert intent == "policy"
+        assert confidence >= 0.5
+
+    def test_classify_intent_employee_retention_not_policy(self):
+        """HR-metric phrasing like 'employee retention rate' must not
+        keyword-match the policy intent (it is an analytics question)."""
+        mock_llm = MagicMock()
+        router = RouterAgent(mock_llm)
+
+        intent, confidence = router.classify_intent(
+            "What is our employee retention rate this quarter?"
+        )
+
+        assert intent != "policy"
 
 
 class TestPermissionChecking:
@@ -255,6 +290,37 @@ class TestRouterRun:
         assert "agent_type" in result
         assert "confidence" in result
         assert "intents" in result
+
+    def test_run_surfaces_specialist_agent_type(self):
+        """The badge names the specialist that answered, not the router."""
+        router = RouterAgent(MagicMock())
+
+        specialist_result = {
+            "answer": "Personnel files are retained for 7 years after employment ends.",
+            "agent_type": "policy_agent",
+            "confidence": 0.85,
+            "sources": ["gdpr_policy.txt"],
+        }
+        with patch.object(router, "classify_intent", return_value=("policy", 0.9)), patch.object(
+            router, "check_permissions", return_value=True
+        ), patch.object(router, "dispatch_to_agent", return_value=specialist_result):
+            result = router.run("How long do you keep my personnel file?")
+
+        assert result["agent_type"] == "policy_agent"
+        assert result["intents"] == [("policy", 0.9)]
+
+    def test_run_defaults_agent_type_to_router_when_unattributed(self):
+        """Dispatch results without a specialist attribution fall back to router."""
+        router = RouterAgent(MagicMock())
+
+        with patch.object(router, "classify_intent", return_value=("policy", 0.9)), patch.object(
+            router, "check_permissions", return_value=True
+        ), patch.object(
+            router, "dispatch_to_agent", return_value={"answer": "x", "confidence": 0.7}
+        ):
+            result = router.run("What is the policy?")
+
+        assert result["agent_type"] == "router"
 
 
 class TestIntentCategories:

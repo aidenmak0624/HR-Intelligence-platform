@@ -17,7 +17,7 @@ test.describe('Login Page', () => {
   // ---- Page Load ----
 
   test('should render the login page with sign-in form', async ({ page }) => {
-    await expect(page).toHaveTitle(/HR Agent.*Sign In/i);
+    await expect(page).toHaveTitle(/HR Intelligence.*Sign In/i);
     await expect(page.locator('#signinEmail')).toBeVisible();
     await expect(page.locator('#signinPassword')).toBeVisible();
     await expect(page.locator('#signinBtn')).toBeVisible();

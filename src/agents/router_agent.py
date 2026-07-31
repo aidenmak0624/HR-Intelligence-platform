@@ -11,6 +11,7 @@ The RouterAgent is the supervisor that:
 from typing import Any, Dict, List, Optional, TypedDict
 import logging
 import json
+import threading
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from sqlalchemy import func as sa_func
@@ -76,7 +77,22 @@ class RouterAgent:
     # Intent categories with examples
     INTENT_CATEGORIES = {
         "employee_info": ["who is", "employee profile", "contact", "department", "report to"],
-        "policy": ["policy", "procedure", "compliance", "guideline", "rule"],
+        "policy": [
+            "policy",
+            "procedure",
+            "compliance",
+            "guideline",
+            "rule",
+            "retention policy",
+            "retention schedule",
+            "retention period",
+            "record retention",
+            "document retention",
+            "data retention",
+            "personnel file",
+            "personnel record",
+            "how long do you keep",
+        ],
         "leave": [
             "leave balance",
             "time off balance",
@@ -144,6 +160,9 @@ class RouterAgent:
         """
         self.llm = llm
         self.agent_cache = {}  # Cache instantiated agents
+        # Serialize agent instantiation: concurrent gthread requests would
+        # otherwise double-build heavy agents (each loads its own RAGPipeline)
+        self._agent_cache_lock = threading.Lock()
 
     # ==================== Intent Classification ====================
 
@@ -317,10 +336,12 @@ Return JSON:
         # Try to get or create agent instance
         try:
             if agent_class_name not in self.agent_cache:
-                # Dynamically import the specialist agent
-                logger.info(f"DISPATCH: Instantiating {agent_class_name}")
-                agent_instance = self._import_agent(intent, agent_class_name)
-                self.agent_cache[agent_class_name] = agent_instance
+                with self._agent_cache_lock:
+                    if agent_class_name not in self.agent_cache:
+                        # Dynamically import the specialist agent
+                        logger.info(f"DISPATCH: Instantiating {agent_class_name}")
+                        agent_instance = self._import_agent(intent, agent_class_name)
+                        self.agent_cache[agent_class_name] = agent_instance
 
             agent = self.agent_cache.get(agent_class_name)
 
@@ -501,15 +522,20 @@ Return JSON:
             }
 
         # Step 4: Dispatch and execute
+        # Keep the specialist's own agent_type (e.g. "policy_agent") so the
+        # UI badge names the agent that actually answered; "router" only when
+        # dispatch produced no specialist attribution.
         if intent == "multi_intent":
             results = self.handle_multi_intent(intents, query, user_context)
             merged = self.merge_responses(results)
-            merged["agent_type"] = "router"
+            if not merged.get("agent_type") or merged["agent_type"] == "none":
+                merged["agent_type"] = "router"
             merged["intents"] = intents
             return merged
         else:
             result = self.dispatch_to_agent(intent, query, user_context)
-            result["agent_type"] = "router"
+            if not result.get("agent_type") or result["agent_type"] == "none":
+                result["agent_type"] = "router"
             result["intents"] = intents
             return result
 

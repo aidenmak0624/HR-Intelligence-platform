@@ -332,15 +332,20 @@ function renderAgentMessage(response, scroll = true) {
         html += `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.1);">`;
         html += renderAgentBadge(response.agent_type);
 
-        if (response.confidence !== undefined) {
-            html += renderConfidenceIndicator(response.confidence);
-        }
-
-        if (response.reasoning_trace && response.reasoning_trace.length > 0) {
+        // The panel opens when there are trace steps OR a confidence value,
+        // so the self-estimate stays reachable even on trace-less responses
+        const traceSteps = Array.isArray(response.reasoning_trace) ? response.reasoning_trace : [];
+        if (traceSteps.length > 0 || response.confidence !== undefined) {
             const traceId = 'trace_' + Date.now();
-            html += `<button class="reasoning-btn" onclick="toggleReasoningTrace('${traceId}')" style="margin-left: 12px; padding: 4px 8px; background: var(--bg-light, #F5F7FA); color: var(--text-primary, #333); border: 1px solid var(--border-color, #E0E6F2); border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">View Reasoning</button>`;
+            html += `<button class="reasoning-btn" onclick="toggleReasoningTrace('${traceId}')" style="margin-left: 12px; padding: 4px 8px; background: var(--bg-light, #F5F7FA); color: var(--text-primary, #333); border: 1px solid var(--border-color, #E0E6F2); border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">View execution trace</button>`;
             html += `<div id="${traceId}" class="reasoning-trace hidden" style="margin-top: 12px; padding: 12px; background: var(--bg-light, #F5F7FA); color: var(--text-secondary, #555); border-radius: 4px; font-size: 12px;">`;
-            response.reasoning_trace.forEach((step, i) => {
+            html += `<p style="margin: 0 0 6px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-secondary, #777);">Execution trace</p>`;
+            // Confidence is a model self-estimate, not a calibrated probability —
+            // it belongs in the trace panel, not on the main chat surface
+            if (response.confidence !== undefined) {
+                html += renderConfidenceIndicator(response.confidence);
+            }
+            traceSteps.forEach((step, i) => {
                 html += `<p style="margin: 4px 0;"><strong>Step ${i + 1}:</strong> ${escapeHtml(step)}</p>`;
             });
             html += `</div>`;
@@ -371,7 +376,16 @@ function renderAgentBadge(agentType) {
         'leave_agent': '#9B59B6',
         'onboarding_agent': '#E67E22',
         'policy_agent': '#3498DB',
-        'employee_info_agent': '#E74C3C'
+        'employee_info_agent': '#E74C3C',
+        // Live specialist agents report short type names (BaseAgent.get_agent_type)
+        'policy': '#3498DB',
+        'compliance': '#16A085',
+        'leave': '#9B59B6',
+        'leave_request': '#9B59B6',
+        'benefits_compensation': '#27AE60',
+        'employee_info': '#E74C3C',
+        'onboarding': '#E67E22',
+        'performance': '#2E86AB'
     };
 
     const color = colors[agentType] || '#7F8C8D';
@@ -385,7 +399,7 @@ function renderConfidenceIndicator(confidence) {
     if (percentage < 50) color = '#E74C3C';
     else if (percentage < 75) color = '#F39C12';
 
-    return `<span style="margin-left: 12px; display: inline-block; font-size: 11px; color: ${color}; font-weight: 600;">Confidence: ${percentage}%</span>`;
+    return `<p style="margin: 0 0 6px 0; font-size: 11px; font-weight: 600;">Model self-estimate (not a calibrated probability): <span style="color: ${color};">${percentage}%</span></p>`;
 }
 
 // ============================================
@@ -513,7 +527,7 @@ function toggleReasoningTrace(traceId) {
         // Find the button that triggered this
         const btn = trace.previousElementSibling;
         if (btn && btn.classList.contains('reasoning-btn')) {
-            btn.textContent = isHidden ? 'Hide Reasoning' : 'View Reasoning';
+            btn.textContent = isHidden ? 'Hide execution trace' : 'View execution trace';
         }
     }
 }

@@ -5,6 +5,7 @@ Iteration 6 - SEC-003
 """
 
 import logging
+import threading
 import time
 from typing import Dict, Optional
 from datetime import datetime, timedelta
@@ -352,6 +353,7 @@ class RateLimiter:
 
 # Global instance for simple use cases
 _default_rate_limiter = None
+_limiter_init_lock = threading.Lock()
 
 
 def get_rate_limiter(config: Optional[RateLimitConfig] = None) -> RateLimiter:
@@ -366,6 +368,10 @@ def get_rate_limiter(config: Optional[RateLimitConfig] = None) -> RateLimiter:
     global _default_rate_limiter
 
     if _default_rate_limiter is None:
-        _default_rate_limiter = RateLimiter(config)
+        # Double-checked locking: with the gthread worker, concurrent first
+        # requests would otherwise race to build (and leak) extra limiters
+        with _limiter_init_lock:
+            if _default_rate_limiter is None:
+                _default_rate_limiter = RateLimiter(config)
 
     return _default_rate_limiter
