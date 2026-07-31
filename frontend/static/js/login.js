@@ -3,7 +3,12 @@
 // HR Intelligence Platform
 // ============================================
 
-const API_BASE = 'http://localhost:5050';
+// API Configuration - use current origin in production, localhost in dev
+// (same pattern as base.js; a hardcoded localhost broke sign-in on the
+// hosted demo: the form POSTed to the visitor's own machine)
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5050'
+    : window.location.origin;
 
 // Tab switching
 function switchTab(tab) {
