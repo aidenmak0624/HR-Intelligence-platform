@@ -95,6 +95,18 @@ class TestIntentClassification:
         assert intent == "policy"
         assert confidence >= 0.5
 
+    def test_classify_intent_employee_retention_not_policy(self):
+        """HR-metric phrasing like 'employee retention rate' must not
+        keyword-match the policy intent (it is an analytics question)."""
+        mock_llm = MagicMock()
+        router = RouterAgent(mock_llm)
+
+        intent, confidence = router.classify_intent(
+            "What is our employee retention rate this quarter?"
+        )
+
+        assert intent != "policy"
+
 
 class TestPermissionChecking:
     """Tests for permission validation."""
