@@ -338,8 +338,9 @@ function renderAgentMessage(response, scroll = true) {
 
         if (response.reasoning_trace && response.reasoning_trace.length > 0) {
             const traceId = 'trace_' + Date.now();
-            html += `<button class="reasoning-btn" onclick="toggleReasoningTrace('${traceId}')" style="margin-left: 12px; padding: 4px 8px; background: var(--bg-light, #F5F7FA); color: var(--text-primary, #333); border: 1px solid var(--border-color, #E0E6F2); border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">View Reasoning</button>`;
+            html += `<button class="reasoning-btn" onclick="toggleReasoningTrace('${traceId}')" style="margin-left: 12px; padding: 4px 8px; background: var(--bg-light, #F5F7FA); color: var(--text-primary, #333); border: 1px solid var(--border-color, #E0E6F2); border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">View execution trace</button>`;
             html += `<div id="${traceId}" class="reasoning-trace hidden" style="margin-top: 12px; padding: 12px; background: var(--bg-light, #F5F7FA); color: var(--text-secondary, #555); border-radius: 4px; font-size: 12px;">`;
+            html += `<p style="margin: 0 0 6px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-secondary, #777);">Execution trace</p>`;
             response.reasoning_trace.forEach((step, i) => {
                 html += `<p style="margin: 4px 0;"><strong>Step ${i + 1}:</strong> ${escapeHtml(step)}</p>`;
             });
@@ -513,7 +514,7 @@ function toggleReasoningTrace(traceId) {
         // Find the button that triggered this
         const btn = trace.previousElementSibling;
         if (btn && btn.classList.contains('reasoning-btn')) {
-            btn.textContent = isHidden ? 'Hide Reasoning' : 'View Reasoning';
+            btn.textContent = isHidden ? 'Hide execution trace' : 'View execution trace';
         }
     }
 }
