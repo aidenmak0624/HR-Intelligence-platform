@@ -133,7 +133,7 @@ async function suite_login(page) {
     await page.goto(`${BASE_URL}/login`);
     await page.waitForLoadState('domcontentloaded');
     const title = await page.title();
-    assertMatch(title, /HR Agent.*Sign In/i);
+    assertMatch(title, /HR Intelligence.*Sign In/i);
     assert(await page.locator('#signinEmail').isVisible(), 'Email input not visible');
     assert(await page.locator('#signinPassword').isVisible(), 'Password input not visible');
     assert(await page.locator('#signinBtn').isVisible(), 'Sign in button not visible');
