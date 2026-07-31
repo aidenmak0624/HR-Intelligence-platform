@@ -119,33 +119,35 @@ def init_services():
 
     def _init_worker():
         try:
-            from src.services.agent_service import AgentService
+            try:
+                from src.services.agent_service import AgentService
 
-            app.agent_service = AgentService()
-            logger.info("✅ Agent service initialized")
-        except Exception as e:
-            logger.error(f"❌ Agent service init failed: {e}")
-            app.agent_service = None
+                app.agent_service = AgentService()
+                logger.info("✅ Agent service initialized")
+            except Exception as e:
+                logger.error(f"❌ Agent service init failed: {e}")
+                app.agent_service = None
 
-        try:
-            from src.services.llm_service import LLMService
+            try:
+                from src.services.llm_service import LLMService
 
-            app.llm_service = LLMService()
-            logger.info("✅ LLM service initialized")
-        except Exception as e:
-            logger.error(f"❌ LLM service init failed: {e}")
-            app.llm_service = None
+                app.llm_service = LLMService()
+                logger.info("✅ LLM service initialized")
+            except Exception as e:
+                logger.error(f"❌ LLM service init failed: {e}")
+                app.llm_service = None
 
-        try:
-            from src.services.rag_service import RAGService
+            try:
+                from src.services.rag_service import RAGService
 
-            app.rag_service = RAGService()
-            logger.info("✅ RAG service initialized")
-        except Exception as e:
-            logger.error(f"❌ RAG service init failed: {e}")
-            app.rag_service = None
-
-        app.services_ready.set()
+                app.rag_service = RAGService()
+                logger.info("✅ RAG service initialized")
+            except Exception as e:
+                logger.error(f"❌ RAG service init failed: {e}")
+                app.rag_service = None
+        finally:
+            # However this worker dies, never leave waiters parked forever
+            app.services_ready.set()
         logger.info("✅ All background service initialization completed")
 
     def _maybe_reinit_services():
@@ -164,7 +166,16 @@ def init_services():
             app._services_init_last_attempt = now
             app.services_ready.clear()
         logger.warning("Retrying background service initialization...")
-        threading.Thread(target=_init_worker, daemon=True).start()
+        try:
+            threading.Thread(target=_init_worker, daemon=True).start()
+        except Exception:
+            # Failed to spawn (e.g. thread exhaustion): restore a retryable
+            # state — otherwise the cleared event blocks every query for the
+            # full wait timeout and the guard above disables further retries.
+            logger.exception("Service re-init spawn failed")
+            with app._services_init_lock:
+                app.services_ready.set()
+                app._services_init_last_attempt = 0.0
 
     logger.info("Launching service init in background (non-blocking)...")
 

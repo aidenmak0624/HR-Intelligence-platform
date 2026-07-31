@@ -11,6 +11,7 @@ The RouterAgent is the supervisor that:
 from typing import Any, Dict, List, Optional, TypedDict
 import logging
 import json
+import threading
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from sqlalchemy import func as sa_func
@@ -154,6 +155,9 @@ class RouterAgent:
         """
         self.llm = llm
         self.agent_cache = {}  # Cache instantiated agents
+        # Serialize agent instantiation: concurrent gthread requests would
+        # otherwise double-build heavy agents (each loads its own RAGPipeline)
+        self._agent_cache_lock = threading.Lock()
 
     # ==================== Intent Classification ====================
 
@@ -327,10 +331,12 @@ Return JSON:
         # Try to get or create agent instance
         try:
             if agent_class_name not in self.agent_cache:
-                # Dynamically import the specialist agent
-                logger.info(f"DISPATCH: Instantiating {agent_class_name}")
-                agent_instance = self._import_agent(intent, agent_class_name)
-                self.agent_cache[agent_class_name] = agent_instance
+                with self._agent_cache_lock:
+                    if agent_class_name not in self.agent_cache:
+                        # Dynamically import the specialist agent
+                        logger.info(f"DISPATCH: Instantiating {agent_class_name}")
+                        agent_instance = self._import_agent(intent, agent_class_name)
+                        self.agent_cache[agent_class_name] = agent_instance
 
             agent = self.agent_cache.get(agent_class_name)
 

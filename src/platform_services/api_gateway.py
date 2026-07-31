@@ -8,6 +8,7 @@ import logging
 import json
 import os
 import re
+import threading
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -22,9 +23,14 @@ from functools import wraps
 logger = logging.getLogger(__name__)
 
 # How long /api/v2/query may block waiting for background service init to
-# finish on a cold container (init takes ~60s on Cloud Run; gunicorn runs
-# threaded so waiting here does not stall other endpoints).
+# finish on a cold container (init takes ~60s on Cloud Run).
 AGENT_INIT_WAIT_SECONDS = float(os.getenv("AGENT_INIT_WAIT_SECONDS", "75"))
+
+# Cap how many request threads may park waiting for init at once. The gthread
+# pool is small (THREADS=8): letting every cold-start query wait would stall
+# static assets, login and health checks behind parked threads. Requests that
+# don't get a slot degrade immediately to the existing fallback answer.
+_INIT_WAITER_SLOTS = threading.Semaphore(3)
 
 
 def await_agent_service(flask_app, timeout_seconds=None):
@@ -34,8 +40,9 @@ def await_agent_service(flask_app, timeout_seconds=None):
     (src.app_v2.init_services) finishes, so ``agent_service`` may
     legitimately be None for the first ~60s of a container's life.
     Waiting turns "silent generic fallback" into "slower but correct
-    answer".  Returns None only when init finished without producing a
-    service — after scheduling a rate-limited re-init for later requests.
+    answer".  Returns None when no waiter slot is free, or when init
+    finished without producing a service — after scheduling a rate-limited
+    re-init for later requests.
     """
     if timeout_seconds is None:
         timeout_seconds = AGENT_INIT_WAIT_SECONDS
@@ -54,12 +61,30 @@ def await_agent_service(flask_app, timeout_seconds=None):
         reinit = getattr(flask_app, "maybe_reinit_services", None)
         if reinit is not None:
             reinit()
+        if ready.is_set():
+            # No retry in flight — init genuinely failed; don't park a thread
+            return getattr(flask_app, "agent_service", None)
 
-    if not ready.is_set():
+    if not _INIT_WAITER_SLOTS.acquire(blocking=False):
+        logger.warning("Init-waiter slots exhausted — serving fallback without waiting")
+        return getattr(flask_app, "agent_service", None)
+
+    try:
         logger.info(f"Agent service still initializing — waiting up to {timeout_seconds:.0f}s")
-        ready.wait(timeout=timeout_seconds)
-
-    return getattr(flask_app, "agent_service", None)
+        deadline = time.monotonic() + timeout_seconds
+        while True:
+            service = getattr(flask_app, "agent_service", None)
+            if service is not None:
+                return service
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return getattr(flask_app, "agent_service", None)
+            # Short slices so we survive event set/clear races during re-init
+            ready.wait(timeout=min(remaining, 1.0))
+            if ready.is_set():
+                return getattr(flask_app, "agent_service", None)
+    finally:
+        _INIT_WAITER_SLOTS.release()
 
 
 class APIVersion(str, Enum):

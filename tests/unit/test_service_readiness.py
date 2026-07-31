@@ -79,6 +79,29 @@ class TestAwaitAgentService:
         assert await_agent_service(app, timeout_seconds=0.2) is None
         reinit.assert_called_once()
 
+    def test_waiter_slots_are_capped(self):
+        """Only a bounded number of threads park on init; the rest degrade fast."""
+        ready = threading.Event()  # init in flight for the whole test
+        app = _fake_app(agent_service=None, ready=ready)
+
+        results = []
+        parked = [
+            threading.Thread(target=lambda: results.append(await_agent_service(app, 3)))
+            for _ in range(3)
+        ]
+        for t in parked:
+            t.start()
+        time.sleep(0.3)  # let the three waiters occupy every slot
+
+        try:
+            start = time.monotonic()
+            assert await_agent_service(app, timeout_seconds=3) is None
+            assert time.monotonic() - start < 0.5  # degraded fast, did not park
+        finally:
+            ready.set()
+            for t in parked:
+                t.join()
+
     def test_waits_on_retry_started_by_reinit(self):
         """When the re-init hook restarts init, the caller waits for it."""
         ready = threading.Event()
