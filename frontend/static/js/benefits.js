@@ -111,8 +111,29 @@ async function loadBenefitsData(showRefreshToast) {
     }
 }
 
-async function loadIntegrationStatus() {
-    const statusResponse = await benefitsFetch('/api/v2/integrations/mcp/status?check=1');
+// Re-check integration status after a failed/unhealthy probe: transient
+// failures (cold-start races, slow HRIS health checks) used to stick as a
+// red "MCP Unavailable" pill until the user manually refreshed.
+const INTEGRATION_RETRY_DELAYS_MS = [4000, 10000, 20000];
+let integrationRetryTimer = null;
+
+function scheduleIntegrationRetry(attempt) {
+    if (attempt >= INTEGRATION_RETRY_DELAYS_MS.length) return;
+    integrationRetryTimer = setTimeout(() => {
+        integrationRetryTimer = null;
+        loadIntegrationStatus(attempt + 1);
+    }, INTEGRATION_RETRY_DELAYS_MS[attempt]);
+}
+
+async function loadIntegrationStatus(attempt = 0) {
+    if (integrationRetryTimer) {
+        clearTimeout(integrationRetryTimer);
+        integrationRetryTimer = null;
+    }
+
+    const statusResponse = await benefitsFetch('/api/v2/integrations/mcp/status?check=1', {
+        timeoutMs: 10000,
+    });
     if (!statusResponse.success || !statusResponse.data) {
         benefitsState.integration = {
             mcp: { status: 'error', tools: 0, protocol_version: '' },
@@ -125,6 +146,7 @@ async function loadIntegrationStatus() {
             },
         };
         renderIntegrationStatus();
+        scheduleIntegrationRetry(attempt);
         return;
     }
 
@@ -139,6 +161,11 @@ async function loadIntegrationStatus() {
         },
     };
     renderIntegrationStatus();
+
+    const mcpStatus = String((benefitsState.integration.mcp || {}).status || '').toLowerCase();
+    if (mcpStatus !== 'ok') {
+        scheduleIntegrationRetry(attempt);
+    }
 }
 
 async function enrollInPlan(planId) {
@@ -191,22 +218,29 @@ async function enrollInPlan(planId) {
 }
 
 async function benefitsFetch(endpoint, options = {}) {
+    const { timeoutMs, ...fetchOptions } = options;
     const role = localStorage.getItem('hr_current_role') || 'employee';
     const token = localStorage.getItem('auth_token');
     const headers = {
         'Content-Type': 'application/json',
         'X-User-Role': role,
-        ...(options.headers || {}),
+        ...(fetchOptions.headers || {}),
     };
 
     if (token) {
         headers.Authorization = `Bearer ${token}`;
     }
 
+    // Opt-in timeout (status probes only) — a hanging health check should
+    // not leave the integration pill stuck in "Checking..." forever
+    const controller = timeoutMs ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+
     try {
         const response = await fetch(`${BENEFITS_API_BASE}${endpoint}`, {
-            ...options,
+            ...fetchOptions,
             headers,
+            ...(controller ? { signal: controller.signal } : {}),
         });
 
         let payload = null;
@@ -236,7 +270,14 @@ async function benefitsFetch(endpoint, options = {}) {
 
         return { success: true, data: payload };
     } catch (error) {
+        if (error && error.name === 'AbortError') {
+            return { success: false, error: `Request timed out after ${timeoutMs}ms.` };
+        }
         return { success: false, error: error.message || 'Network request failed.' };
+    } finally {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
     }
 }
 
